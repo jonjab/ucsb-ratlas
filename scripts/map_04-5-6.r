@@ -192,7 +192,11 @@ zoom_1_plot <- ggplot() +
   geom_raster(data = zoom_1_df,
               aes(x=x, y=y, fill=GRAY_HR_SR_OB)) +
   geom_spatvector(data=zoom_2_crop_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
   coord_sf(crs=campus_crs) + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Zoom 1: California")
 
