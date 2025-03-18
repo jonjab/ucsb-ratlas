@@ -90,7 +90,7 @@ Wide Landscape 9x16ish? \* A stripped down version of #1
 
 
 ### Map 3 sketch:
-![Map 3 currently](/final_output/map3_2025_mar.png "Maps 4-5-6-7")
+![Map 3 currently](/final_output/map3_2025_march.png "Maps 4-5-6-7")
 ![Overview map](/images/overview_map.jpg "Sketch")
 
 
