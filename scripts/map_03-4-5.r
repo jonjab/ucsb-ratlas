@@ -323,7 +323,7 @@ zoom_3_plot <- ggplot() +
         panel.ontop=TRUE,
         panel.background = element_blank()) +
   coord_sf(label_axes="ES") + 
-  ggtitle("Map 6: zm 3: UCSB & Surroundings", subtitle = gg_labelmaker(current_ggplot+1))
+  ggtitle("Map 5: zm 3: UCSB & Surroundings", subtitle = gg_labelmaker(current_ggplot+1))
 
 
 zoom_3_plot
