@@ -8,6 +8,7 @@ downloaded_data/**
 *.qgz
 
 output_data/**
+images/**
 !output_data/.gitkeep
 
 # Mac stuff
