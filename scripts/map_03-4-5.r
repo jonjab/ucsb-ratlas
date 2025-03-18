@@ -1,5 +1,5 @@
-# map 4-5-6 is a tryptic,
-# that runs across the top of map 3
+# map 3-4-5 is a tryptic,
+# that runs across the top of map 7
 # zooming in to campus
 # the zoom to Cali locator sheet
 
@@ -42,6 +42,10 @@ gg_labelmaker <- function(plot_num){
   current_ggplot <<- plot_num
   return(plot_text)
 }
+# every ggtitle should be:
+# ggtitle(gg_labelmaker(current_ggplot+1))
+# end automagic ggtitle           #######
+
 
 # set up a local CRS to use throughout
 campus_DEM <- rast("source_data/campus_DEM.tif") 
@@ -51,7 +55,7 @@ str(campus_crs)
 
 
 # #####################
-# Map 4
+# Map 3
 # Zoom 1: west US overview
 # this one arrived as a hillshade.
 # we will also need a DEM to match
@@ -71,7 +75,7 @@ plot(zoom_1)
 
 
 # ############################
-# Map 5
+# Map 4
 # Zoom 2
 # Bite of California
 
@@ -136,7 +140,7 @@ plot(zoom_2_hillshade)
 polys(zoom_3_extent, border="red", lwd=4)
 
 # ###########################
-# Map 6
+# Map 5
 # Zoom 3: UCSB & Environs
 
 plot(campus_DEM)
@@ -353,7 +357,7 @@ zoom_1_plot <- ggplot() +
   geom_spatvector(data=zoom_2_crop_extent, color="red", fill=NA) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf(crs=campus_crs) + 
-  ggtitle("Map 4: zm 1: California", subtitle = gg_labelmaker(current_ggplot+1))
+  ggtitle("Map 3: zm 1: California", subtitle = gg_labelmaker(current_ggplot+1))
 
 
 zoom_1_plot
@@ -425,7 +429,7 @@ zoom_2_plot <- ggplot() +
         panel.ontop=TRUE,
         panel.background = element_blank()) +
   coord_sf() + 
-  ggtitle("Map 5: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
+  ggtitle("Map 4: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
 zoom_2_plot
 
 
@@ -434,7 +438,7 @@ zoom_2_plot
 #######################################################################################
 
 
-ggsave("images/map4.png", width = 3, height = 4, plot=zoom_1_plot)
-ggsave("images/map5.png", width = 3, height = 4, plot=zoom_2_plot)
-ggsave("images/map6.png", width = 4, height = 3, plot=zoom_3_plot)
+ggsave("images/map3.png", width = 3, height = 4, plot=zoom_1_plot)
+ggsave("images/map4.png", width = 3, height = 4, plot=zoom_2_plot)
+ggsave("images/map5.png", width = 4, height = 3, plot=zoom_3_plot)
 
