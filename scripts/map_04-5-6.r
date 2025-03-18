@@ -246,7 +246,11 @@ zoom_2_plot <- ggplot() +
               aes(x=x, y=y, alpha=hillshade)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
   coord_sf() + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Bite of California w DEM")
 zoom_2_plot
@@ -267,7 +271,11 @@ zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_hillshade_df,
               aes(x=x, y=y, alpha=hillshade)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
   coord_sf() + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Campus hillshade")
 zoom_3_plot
@@ -280,7 +288,11 @@ zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_DEM_df,
               aes(x=x, y=y, fill=greatercampusDEM_1_1)) +
   scale_fill_viridis_c() +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
   coord_sf() + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "UCSB DEM")
 zoom_3_plot
@@ -297,9 +309,15 @@ zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_hillshade_df,
               aes(x=x, y=y, alpha=hillshade)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
-  coord_sf() + 
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "UCSB & Surroundings")
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
+  coord_sf(label_axes="ES") + 
+  ggtitle("Map 6: zm 3: UCSB & Surroundings", subtitle = gg_labelmaker(current_ggplot+1))
+
+
 zoom_3_plot
 
 
@@ -331,7 +349,8 @@ zoom_1_plot <- ggplot() +
   geom_spatvector(data=zoom_2_crop_extent, color="red", fill=NA) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf(crs=campus_crs) + 
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Zoom 1: California w/places")
+  ggtitle("Map 4: zm 1: California", subtitle = gg_labelmaker(current_ggplot+1))
+
 
 zoom_1_plot
 
@@ -396,9 +415,13 @@ zoom_2_plot <- ggplot() +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
   geom_spatvector(data=zoom_2_places, fill="NA", color="gray") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
   coord_sf() + 
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Bite of California w DEM")
+  ggtitle("Map 5: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
 zoom_2_plot
 
 

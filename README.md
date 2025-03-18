@@ -1,27 +1,26 @@
 
 
-# geospatialRUCSBAtlas
+# ucsb-ratlas
+### A geospatial R example atlas of the UCSB campus
 
 A repo that uses local UCSB examples applied to all of the steps of the
 Carpentries' Intro to Raster and Vector Data workshop.
 
 Scripts run parallel to the episodes (ep_01.r ep_02.r ... ep_13.r) and create maps
-'suitable for publication' (map01.r, map02.r, ... map12.r) as laid out in Maps 1 thru 7
+'suitable for publication' (map01.r, map02.r, ... map12.r) as laid out in Maps 1 thru 12
 below.
 
 The goals are to produce nice atlas pages of campus that use all of
 the techniques covered in the Intro to GeoSpatial R Carpentry lesson.
-(Maybe not the NDVI over time, since we've never ever done that
-episode.)
 
 We have created a [Data Dictionary](datadictionary.md) to help us keep
-track of names.
+track of object names and files.
 
 ## Getting Started
 
 1: Clone this repo. 
 
-2: Run `new_data_prep.r` This script downloads the filder `data.zip` from
+2: Run `new_data_prep.r` This script downloads the folder `data.zip` from
 our Carentry Google drive into a `downloaded_data` directory), and unzips
 it into `source_data`
 
