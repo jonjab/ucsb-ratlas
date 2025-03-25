@@ -1,6 +1,12 @@
 # An episode ep_weather
 # to be plugged in post-intermediate R
 
+# clean the environment and hidden objects
+rm(list=ls())
+
+current_episode <- 13.5
+
+
 # Sigrid is going to walk us towards weather stations.
 
 library(tidyverse)
