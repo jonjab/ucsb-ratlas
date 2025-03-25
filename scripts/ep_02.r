@@ -72,7 +72,6 @@ campus_DEM_df <- campus_DEM_df %>%
 
 # this shows sea level at 2-5 ft
 
-
 ggplot() + 
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
   coord_quickmap() +
@@ -225,3 +224,4 @@ str(campus_DEM_df)
 
 # Challenge: Make a 2-layer overlay for a 2nd set of rasters
 # try the bathymetry (if we have a hillshade)
+ 
