@@ -350,7 +350,8 @@ map2_gg5 <- ggplot() +
   theme_minimal() +
   labs(subtitle = 'Map 2: Stylized thematic map of UCSB campus',
        title = 'Trees, bikes, and water. (v.5)',
-       x = 'Longitude', y = 'Latitude') +
+       caption = gg_labelmaker(current_ggplot+1),
+       x = 'Long', y = 'Lat') +
   theme(
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5),
