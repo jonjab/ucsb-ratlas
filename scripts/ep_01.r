@@ -114,7 +114,6 @@ str(campus_DEM)
 
 # ### Dealing with Missing Data ###
 ############
-
 # https://datacarpentry.github.io/r-raster-vector-geospatial/01-raster-structure.html
 
 # NAs often wind up being the data

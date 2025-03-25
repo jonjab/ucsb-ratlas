@@ -53,7 +53,7 @@ str(natural_color)
 class(natural_color)
 
 # outputting it to stdout shows how
-# many bands (5 and 4).
+# many bands (5 and 8).
 natural_color
 planet_NCOS
 
@@ -71,15 +71,15 @@ natural_color_stack <- stack("source_data/cirgis_1ft/w_campus_1ft.tif")
 
 planet_NCOS_stack <- stack("source_data/planet/planet/2025-01-12_SkySat/20250112_185234_35_24f9_3B_AnalyticMS_8b_clip.tif")
 
-# still has 5 channels
+# still has 5 bands
 natural_color_stack
+str(natural_color)
 
-# has 8 channels
+# has 8 bands
 planet_NCOS_stack
 
 # plotRGB(NCOS, r=1, g=2, b=3)
 
-str(natural_color)
 
 # plotRGB is for stacks
 plotRGB(natural_color_stack)
@@ -113,6 +113,7 @@ plotRGB(natural_color_stack,
 
 # as we did in ep. 1
 # we can use >describe<
+# but I don't see NA's described
 describe("source_data/w_campus_1ft/w_campus_1ft.tif")
 
 # SpatRasterDataset
