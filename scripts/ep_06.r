@@ -49,7 +49,7 @@ st_bbox((bikes_icm))
 st_bbox((birds_habitat))
 st_bbox((bikes_library))
 
-
+# ### Vector Layer Metadata and Attributes
 # here in the lesson there's lots of comparisons of metadata
 # in sf it lets you know point, line, polygon
 
@@ -61,6 +61,7 @@ str(bikes_icm)
 
 # POINTS
 str(birds_points)
+st_crs(birds_points)
 
 # this example might be more striking if there
 # were new west campus bike paths
@@ -83,7 +84,7 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
-
+# ### Spatial Data Attributes
 
 # CHALLENGE ###############################
 # Load and inspect:
