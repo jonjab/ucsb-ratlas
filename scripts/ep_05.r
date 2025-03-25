@@ -118,16 +118,7 @@ natural_color_brick <- brick("source_data/cirgis_1ft/w_campus_1ft.tif")
 natural_color_brick
 
 plotRGB(natural_color_brick)
-natural_color_stack <- stack("source_data/cirgis_1ft/w_campus_1ft.tif")
 
-planet_NCOS_stack <- stack("source_data/planet/planet/2025-01-12_SkySat/20250112_185234_35_24f9_3B_AnalyticMS_8b_clip.tif")
-
-# still has 5 bands
-natural_color_stack
-str(natural_color)
-
-# has 8 bands
-planet_NCOS_stack
 
 # the metadata shows 5 bands. How 
 # about nodata value?
@@ -141,7 +132,9 @@ describe("source_data/w_campus_1ft/w_campus_1ft.tif")
 ###################
 
 # SpatRasterDataset comes from terra
-natural_color_sds <- sds(natural_color_terra)
+
+# ????????????????????
+# natural_color_sds <- sds(natural_color_brick)
 
 
 # Challenge: What Functions Can Be Used on an R Object of a particular class?
