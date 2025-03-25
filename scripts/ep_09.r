@@ -85,13 +85,15 @@ ggplot() +
 # to a previously defined SoCal area of interest:
 streams <- vect("source_data/california_streams/California_Streams.shp")
 zoom_2_extent <- vect("source_data/socal_aoi.geojson")
+plot(zoom_2_extent)
 
 # loooooong plot
-plot(streams)
+# plot(streams)
 
-ggplot() +
-  geom_sf(data=streams, color="lightblue") +
-  coord_sf()
+
+#ggplot() +
+#  geom_sf(data=streams, color="lightblue") +
+#  coord_sf()
 
 
 # these are different
