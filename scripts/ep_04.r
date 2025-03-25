@@ -10,8 +10,8 @@
 # do raster math on the bathymetry layer to make sea level zero
 # or is it the DEM that has sea level at 4ft?
 
-
-# Libraries
+#############################################
+# setup for each episode
 library(tidyverse)
 library(terra)
 
@@ -19,7 +19,7 @@ library(terra)
 rm(list=ls())
 
 current_episode <- 4
-# make our ggtitles automagically #######
+# make our ggtitles automatically #######
 # set ggplot counter
 current_ggplot <- 0
 
@@ -34,6 +34,9 @@ gg_labelmaker <- function(plot_num){
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle           #######
 
+# Load the data
+############
+# https://datacarpentry.github.io/r-raster-vector-geospatial/04-raster-calculations-in-r.html#load-the-data
 
 # reload rasters
 # from output folder
@@ -51,9 +54,7 @@ campus_bath
 # don't want to read that? Test that:
 crs(campus_DEM) == crs(campus_bath)
 
-# you'll need this later
-campus_bath_df <- as.data.frame(campus_bath, xy=TRUE)
-
+# What's the dimension of our raster (number of pixels)?
 campus_DEM %>%  
   ncell()
 
@@ -63,6 +64,12 @@ str(campus_DEM)
 campus_DEM_df <- as.data.frame(campus_DEM, xy=TRUE) %>%
   rename(elevation = greatercampusDEM_1_1) # rename to match code later
 str(campus_DEM_df)
+
+# Challenge: Why does our dataframe has 701,000 rows?
+# Solution: It's the dimension of the raster (# of pixels) minus the 
+# NA values of the raster. 1,117,158 - 416,158 = 701,000.
+# If you do summary(campus_DEM) you don't get the total number of NAs
+# so you need to do summary(values(campus_DEM))
 
 campus_bath_df <- as.data.frame(campus_bath, xy=TRUE) %>%
   rename(bathymetry = Bathymetry_2m_OffshoreCoalOilPoint)
@@ -84,6 +91,12 @@ ggplot() +
 
 # this sea level doesn't make much sense, 
 # why is it 5 ft? so let's do:
+
+# Raster Math & Canopy Height Models
+############
+# https://datacarpentry.github.io/r-raster-vector-geospatial/04-raster-calculations-in-r.html#raster-math-canopy-height-models
+# Here we do simple raster math, not with efficient lapp() method
+
 
 # raster math to substract 5ft from the DEM
 sea_level <- campus_DEM - 5
@@ -135,6 +148,10 @@ ggplot() +
 # how write a new geoTIFF 
 # with the new 
 # sea level = 0 version of the data
+
+# Export a GeoTIFF
+############
+# https://datacarpentry.github.io/r-raster-vector-geospatial/04-raster-calculations-in-r.html#export-a-geotiff
 
 writeRaster(campus_DEM, "output_data/ep_4_campus_sea_level_DEM.tif",
             filetype="GTiff",
