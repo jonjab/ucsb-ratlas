@@ -3,15 +3,12 @@
 
 library(tidyverse)
 library(raster)
-# library(rgdal)
 library(terra)
 library(sf)
 library(scales)
 
 # clean the environment and hidden objects
 rm(list=ls())
-
-# set up objects
 
 # make our ggtitles automagically #######
 # set map number
@@ -27,19 +24,17 @@ gg_labelmaker <- function(plot_num){
   return(plot_text)
 }
 
-# every ggtitle should be:
+# every ggtitle() or labs() should be:
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle           #######
 
 
 # add vector layers
-
 buildings <- st_read("source_data/campus_buildings/Campus_Buildings.shp")
 iv_buildings <- st_read("source_data/iv_buildings/iv_buildings/CA_Structures_ExportFeatures.shp")
 # walkways <- ???
 bikeways <- st_read("source_data/icm_bikes/bike_paths/bikelanescollapsedv8.shp")
 habitat <- st_read("source_data/NCOS_Shorebird_Foraging_Habitat/NCOS_Shorebird_Foraging_Habitat.shp")
-
 
 
 # basic terra plots
@@ -121,9 +116,9 @@ plot(campus_bath)
 crs(campus_DEM) == crs(campus_bath)
 
 #################################
-
 # Julien solved this in ep_4
-# for these files, CRS, extent, and resolution all match:
+# for these files, CRS, extent, and resolution all 
+# need to be made to match:
 
 
 # do they have the same projections?
@@ -135,9 +130,10 @@ ext(campus_DEM) == ext(campus_bath)
 
 campus_bath <- crop(x=campus_bath, y=campus_DEM)
 plot(campus_bath)
+crs(campus_bath)
 
 # save campus bathymetry here
-writeRaster(campus_bath, "output_data/campus_bath.tif", filetype="GTiff", overwrite=TRUE)
+writeRaster(campus_bath, "output_data/campus_bath_epsg2874.tif", filetype="GTiff", overwrite=TRUE)
 
 # make dataframes
 campus_DEM_df <- as.data.frame(campus_DEM, xy=TRUE) %>%
@@ -154,7 +150,7 @@ sea_level <- campus_DEM - 5
 sea_level_0 <- app(sea_level, function(x) ifelse(x <=0, NA, x))
 
 # Note: this remove some values in the marsh that are below 0
-# we are going to want those back later as our 'vernal pools'
+# we are going to want those back later 
 
 # Make it a data frame and rebinned
 sea_level_df <- as.data.frame(sea_level_0, xy=TRUE) %>% 
@@ -239,7 +235,7 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_quickmap()
   
-# start batho-topo
+# create batho-topo
 # while we are here, we should make 
 # one DEM that is both bathymetry and elevation
 # by combining campus_DEM and sea_level_0
@@ -263,38 +259,45 @@ campus_bathotopo <- merge(campus_bath_20m, sea_level_0)
 
 plot(campus_bathotopo)
 writeRaster(campus_bathotopo, "output_data/campus_bathotopo.tif", overwrite=TRUE)
-
 # end batho-topo
+# even though we don't do anything with it here in map 1
 # ######
 
   
 # overlay the vectors
-
-names(campus_DEM)
-names(campus_bath)
-
 # they won't overlay because
-# you need to re-project
+# you need to re-project the vectors
 ggplot() +
-  geom_sf(data=habitat, color="yellow") +
-  geom_sf(data=buildings) +
-  geom_sf(data=bikeways, color="blue") +
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
   geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
   scale_fill_viridis_c(na.value="NA") +
+  geom_sf(data=habitat, color="yellow") +
+  geom_sf(data=buildings) +
+  geom_sf(data=bikeways, color="blue") +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
     coord_sf()
 
 # reproject the vectors
-buildings <- st_transform(buildings, campus_projection)
-iv_buildings <- st_transform(iv_buildings, campus_projection)
-habitat <- st_transform(habitat, campus_projection)
-bikeways <- st_transform(bikeways, campus_projection)
+buildings <- st_transform(buildings, crs(campus_DEM))
+iv_buildings <- st_transform(iv_buildings, crs(campus_DEM))
+bikeways <- st_transform(bikeways, crs(campus_DEM))
+habitat <- st_transform(habitat, crs(campus_DEM))
+
+# now the overlays work
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
+  geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
+  scale_fill_viridis_c(na.value="NA") +
+  geom_sf(data=habitat, color="yellow") +
+  geom_sf(data=buildings) +
+  geom_sf(data=bikeways, color="blue") +
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  coord_sf()
 
 
-
-#bring back the hillshade
-#open file from ep1-2
+# bring back the hillshade
+# open file from ep1-2
+# and maybe put it on top of batho_topo since you never use that one?
 
 campus_hillshade_df <- 
   rast("source_data/campus_hillshade.tif") %>% 
@@ -339,9 +342,16 @@ final_ggplot <- ggplot() +
   geom_sf(data=buildings, color ="pink") +
   geom_sf(data=habitat, color=alpha("darkorchid1", .1), fill=NA) +
   geom_sf(data=bikeways, color="#00abff") +
-  ggtitle(gg_title_string, subtitle="UCSB & environs") + 
+  labs(title=gg_title_string, 
+       subtitle="UCSB, buildings, environs, bikepaths",
+       caption = "rAtlas Map 1") + 
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
     coord_sf()
 
+
+# is there anything we don't like about this?
+# do we want subtle off-campus bike paths?
+
 final_ggplot
 ggsave("images/map1.11.png", width = 16, height = 9, plot=final_ggplot)
+ggsave("final_output/map_01.png", width = 16, height = 9, plot=final_ggplot)
