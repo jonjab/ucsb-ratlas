@@ -1,4 +1,7 @@
-# episode 6: vector data
+#############################################
+# ep6.r
+# ## Open and Plot Vector Layers 
+
 
 library(sf)
 library(terra)
@@ -44,8 +47,6 @@ birds_points <- st_read("source_data/NCOS_Bird_Survey_Data_20190724shp/NCOS_Bird
 # you have data from opposite sides of the world.
 st_bbox((bikes_icm))
 st_bbox((birds_habitat))
-
-
 st_bbox((bikes_library))
 
 
@@ -59,7 +60,6 @@ st_bbox((bikes_library))
 str(bikes_icm)
 
 # POINTS
-# I don't think these birds are points
 str(birds_points)
 
 # this example might be more striking if there
@@ -70,6 +70,7 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf() 
 
+# uhhh not sure whats going on here
 ggplot() +
   geom_sf(data=bikes_icm, color = "red", size = .75) +
   geom_sf(data=bikes_library, color = "blue", size = 1.5) +
@@ -108,9 +109,10 @@ westcampus <- st_read("source_data/planet/planet/UCSB-30-sqkm-aoi.geojson")
 maincampus <- st_read("source_data/planet/planet/UCSB-85sqkm-aoi.geojson")
 
 # you could tell visually!
+# color blind friendly, no green
 ggplot() +
   geom_sf(data=greatercampus, color = "red") +
-  geom_sf(data=maincampus, color = "green") +
+  geom_sf(data=maincampus, color = "orange") +
   geom_sf(data=westcampus, color = "blue") +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
@@ -131,7 +133,7 @@ ggplot() +
   geom_sf(data=bikes_library, color = "red", size = .75) +
   geom_sf(data=buildings, color = "gray") +
   geom_sf(data=greatercampus, color = "red") +
-  geom_sf(data=maincampus, color = "green") +
+  geom_sf(data=maincampus, color = "orange") +
   geom_sf(data=westcampus, color = "blue") +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Error!")
   
@@ -140,7 +142,7 @@ ggplot() +
 # filled polygons need to go on the bottom
 ggplot() +
   geom_sf(data=greatercampus, color = "red", size = 2) +
-  geom_sf(data=maincampus, color = "green") +
+  geom_sf(data=maincampus, color = "orange") +
   geom_sf(data=westcampus, color = "blue") +
   geom_sf(data=bikes_icm, color = "blue", size = 1.5) +
   geom_sf(data=bikes_library, color = "red", size = .75) +
@@ -154,7 +156,7 @@ ggplot() +
 # add birds here
 ggplot() +
   geom_sf(data=greatercampus, color = "red", size = 2) +
-  geom_sf(data=maincampus, color = "green") +
+  geom_sf(data=maincampus, color = "orange") +
   geom_sf(data=westcampus, color = "blue") +
   geom_sf(data=bikes_icm, color = "blue", size = 2) +
   geom_sf(data=bikes_library, color = "red", size = .75) +
