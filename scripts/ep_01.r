@@ -169,6 +169,12 @@ str(campus_bath_df)
 summary(campus_bath_df)
 
 # histogram to look at the elevation distribution
+ggplot()+
+  geom_histogram(data=campus_bath_df, aes(depth))
+
+# bin width warning so make some more bins
+ggplot()+
+  geom_histogram(data=campus_bath_df, aes(depth), bins = 40)
 
 ### bad data example goes here.
 
@@ -178,7 +184,7 @@ summary(campus_bath_df)
 ggplot() +
   geom_histogram(data = campus_DEM_df, aes(elevation)) 
 ggplot() +
-  geom_histogram(data = campus_bath_df, aes(Bathymetry_2m_OffshoreCoalOilPoint))
+  geom_histogram(data = campus_bath_df, aes(depth))
 
 # crs() and str() don't tell us what bad data values are.
 
