@@ -99,7 +99,7 @@ plotRGB(west_campus_4ft,
         g = 4, 
         b = 5)
 
-plotRGB(natural_color_stack,
+plotRGB(west_campus_4ft,
         r = 3,
         g = 2, 
         b = 1)
