@@ -145,6 +145,6 @@ natural_color_sds <- sds(natural_color_terra)
 
 
 # Challenge: What Functions Can Be Used on an R Object of a particular class?
-###################
+#
 
 
