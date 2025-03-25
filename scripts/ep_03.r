@@ -221,6 +221,7 @@ ggplot() +
 
 
 ## to do
-# there should be a 3rd and 4th raster in here to replicate
+# ### Raster Resolution 
+
 # the challenges.
 # Is there a before-and-after DEM of NCOS?
