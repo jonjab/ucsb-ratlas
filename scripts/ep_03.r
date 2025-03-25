@@ -1,5 +1,6 @@
+#############################################
 # ep3.r
-# re-project data
+# re-project raster data
 # overlays
 
 
@@ -29,7 +30,7 @@ gg_labelmaker <- function(plot_num){
 
 
 
-# set up objects from previous episodes
+# ## Set up objects from previous episodes
 
 # create the campus DEM
 campus_DEM <- rast("source_data/campus_DEM.tif")
@@ -46,8 +47,11 @@ campus_DEM_df <- campus_DEM_df %>%
 
 str(campus_DEM_df)
 
+# ## Raster Projections in R
+#################################
+
 # ep3 is reprojections. We need a raster in a different projection.
-# how about bathymetry?
+# how about bathymetry? (this is our digital terrain model)
 # SB_bath.tif came out of data_prep.r
 # make it the tidy way, so that there's not an extra object
 bath_rast <- rast("source_data/SB_bath.tif")  
@@ -96,8 +100,7 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_quickmap()
 
-
-# so now I am ready to overlay the two files
+# create a map of DTM layered over hillshade
 # this reproduces the '2 rasters with mismatched projections'
 # part of the lesson
 ggplot() +
@@ -108,14 +111,20 @@ ggplot() +
   coord_quickmap()
 
 
+# Exercise: View the CRS for each dataset 
+
 # let's remake bath_df with a re-projected raster
 # check the original bathymetry raster projection:
 crs(bath_rast , proj=TRUE)
+crs(bath_rast, parse=TRUE)
 
 # I need to get projection and resolution objects somewhere.
 crs(campus_DEM ) 
 res(campus_DEM)
 
+
+# ### Reproject Rasters
+#################################
 # We can reproject using the other raster as reference matching projection and resolution
 reprojected_bath <- project(bath_rast, campus_DEM)
 reprojected_bath
