@@ -95,7 +95,7 @@ ggplot() +
   ggtitle("Where is sea level ?")
 
 
-# More Plot Formatting
+# ### More Plot Formatting
 # ############################# 
 # this isn't so nice
 
@@ -148,7 +148,7 @@ ggplot() +
   ggtitle("Hillshade")+
   coord_quickmap()
 
-
+# ### Layering Rasters
 # #############
 # now plot the hillshade on top of the DEM:
 
