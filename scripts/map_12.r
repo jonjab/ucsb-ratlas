@@ -175,7 +175,7 @@ for (images in scene_paths) {
 ndvi_series_names <- list.files("output_data/ndvi")
 ndvi_series_names
 
-testraster <- rast("output_data/ndvi/20230912_175450_00_2439.tif")
+testraster <- rast("output_data/ndvi/20230912_175450_00_243.tif")
 summary(values(testraster))
 
 # check the files's resolutions and 
@@ -353,7 +353,7 @@ str(ndvi_series_custom_binned_df)
 
 # this ep 14 tidbit isn't working.
 # maybe we need to work on spatrasters.
-#avg_NDVI <- global(ndvi_series_custom_binned_df, mean, na.rm=TRUE)
+avg_NDVI <- global(ndvi_series_stack, mean, na.rm=TRUE)
 
 
 avg_NDVI
@@ -382,14 +382,8 @@ plot(avg_NDVI$MeanNDVI)
 avg_NDVI_df <- as.data.frame(avg_NDVI, rm.na=FALSE)
 str(avg_NDVI_df)
 
-# this plot less so:
 ggplot(avg_NDVI_df, mapping = aes(Month, MeanNDVI)) +
   geom_point()
-
-
-
-
-
 
 
 # we'll need weather data to mimic the lesson.

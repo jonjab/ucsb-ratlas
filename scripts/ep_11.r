@@ -12,6 +12,7 @@ library(sf)
 library(geojsonsf)
 # new!
 library(terrainr)
+library(tidyterra)
 
 # clean the environment and hidden objects
 rm(list=ls())
@@ -94,6 +95,7 @@ ggplot() +
 # from ep 5
 # why are we using an RGB? (because episode 5 was color)
 
+# geom_spatial_rgb() is from tidyterra
 ggplot() +
   geom_spatraster_rgb(data=ncos_rgb) +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
@@ -103,10 +105,14 @@ ggplot() +
 # campus Areas of Interest (AOIs) as geojson
 # use these AOIs as the extent to crop the raster?
 # they come into the lesson in ep. 6.
-# greatercampus <- st_read("source_data/greater_UCSB-campus-aoi.geojson")
+
+greatercampus <- st_read("source_data/greater_UCSB-campus-aoi.geojson")
+greatercampus60km <- st_read("source_data/ucsb_60sqkm_planet_extent.geojson")
+
 ggplot() +
   geom_sf(data=greatercampus, color = "red") +
-#  geom_spatial_rgb(data=natural_color_brick) +
+  geom_sf(data=greatercampus60km, color = "blue") +
+  geom_spatraster_rgb(data=ncos_rgb) +
   coord_sf()
 
 # from episode 3 we know:
@@ -116,7 +122,7 @@ crs(greatercampus) == crs(campus_DEM)
 
 
 # get a geojson and turn that into a vector
-#ncos_aoi <- geojson_sf("source_data/ncos_aoi.geojson",expand_geometries = TRUE )
+# ncos_aoi <- geojson_sf("source_data/ncos_aoi.geojson", expand_geometries = TRUE )
 
 # plot(ncos_aoi)
 # crs(ncos_aoi)
