@@ -87,14 +87,6 @@ streams <- vect("source_data/california_streams/California_Streams.shp")
 zoom_2_extent <- vect("source_data/socal_aoi.geojson")
 plot(zoom_2_extent)
 
-# loooooong plot
-# plot(streams)
-
-
-#ggplot() +
-#  geom_sf(data=streams, color="lightblue") +
-#  coord_sf()
-
 
 # these are different
 crs(zoom_2_extent) == crs(streams)
@@ -124,15 +116,23 @@ plot(streams_zoom_2)
 
 # make a ggplot of streams_zoom_2
 # why won't it map?
-# it has a crs and map
+# it has a crs and extent
 crs(streams_zoom_2)
 ext(streams_zoom_2)
 
 # this doesn't work this time around
 # plot(streams_zoom_2$geometry)
+plot(streams_zoom_2)
+str(streams_zoom_2)
+names(streams_zoom_2)
+str(streams_zoom_2$Shape__Len)
+
+methods(class = class(streams_zoom_2))
+streams_zoom_2_df <- as.data.frame(streams_zoom_2, xy=TRUE)
 
 ggplot() +
-  geom_sf(data=streams_zoom_2, color="lightblue") +
+  geom_sf(data=streams_zoom_2_df$geometry, color="blue") +
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
 # look at our other vectors
@@ -145,7 +145,7 @@ ggplot() +
 
 # can I put in streams now?
 ggplot() +
-  geom_sf(data=streams_zoom_2, color="lightblue") +
+  geom_sf(data=streams_zoom_2_df$geometry, color="lightblue") +
   geom_sf(data=places, color = "red") +
   geom_sf(data=coast, color = "blue") +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Very subtle streams") +
@@ -154,7 +154,7 @@ ggplot() +
 ggplot() +
   geom_sf(data=places, color = "red") +
   geom_sf(data=coast, color = "blue") +
-  geom_sf(data=streams_zoom_2, color="lightblue") +
+  geom_sf(data=streams_zoom_2_df$geometry, color="lightblue") +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Very subtle streams") +
   coord_sf() 
 
@@ -194,53 +194,5 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Cali Coast")+
   coord_sf()
 
-# do they overlay before re-projection?
-ggplot() +
-  geom_sf(data = places,color="purple") +
-  geom_sf(data = coast, color="blue") +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=": Places and Coast SUCCESS") +
-  coord_sf()
-# they do!
-
-ggplot() +
-  geom_sf(data = streams_zoom_2, color="blue") +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="just the streams") +
-  coord_sf()
-
-
-ggplot() +
-  geom_sf(data = places,color="purple") +
-  geom_sf(data = coast, color="gray") +
-  geom_sf(data = streams_zoom_2, color="blue") +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Map 9.4: ???") +
-  coord_sf()
-# fails!
-
-st_crs(coast)
-
-# start by putting the coast and streams in the same CRS
-streams_crop2bite_4326 <- project(streams_zoom_2, crs(coast))
-
-# now they should overlay:
-ggplot() +
-  geom_sf(data = places,color="purple") +
-#  geom_sf(data = coast, color="purple") +
-  geom_sf(data = streams_crop2bite_4326, color="blue") +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Well? ???") +
-  coord_sf()
-
-
-ggplot() +
-  geom_sf(data = streams_crop2bite_4326, color = "blue") +
-  geom_sf(data = coast, color = "black",alpha = 0.25,size = 5) +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Streams and Coast") +
-  coord_sf()
-
-ggplot() +
-  geom_sf(data = streams_crop2bite_4326, color = "blue") +
-  geom_sf(data = coast, color = "black",alpha = 0.25,size = 5) +
-  geom_sf(data = places,color="purple") +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Streams and Coast and Places") +
-  coord_sf()
 
   
