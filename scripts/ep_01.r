@@ -1,6 +1,5 @@
-# graphics for local examples for 
 # R geospatial
-# episodes 1 and 2
+# episodes 1
 
 #############################################
 # setup for each episode
@@ -18,10 +17,16 @@ current_episode <- 1
 
 
 #############################################
-# ep. 1
+# ep. 1 narrative starts
+
+# View Raster File Attributes
+############
 
 # get info about your first raster dataset
 describe("source_data/campus_DEM.tif")
+
+# Open a Raster in R
+############
 
 # make it into an object you can manipulate
 campus_DEM <- rast("source_data/campus_DEM.tif")
@@ -71,32 +76,46 @@ ggplot() + geom_raster(data = campus_DEM_df,
 
 
 
+# Plotting Tip
+############
+
 # faster terra plot (terra::plot masks base::plot)
 # also doesn't force you to remember the name of
 # the data layer
 plot(campus_DEM)
 
 
-# Check CRS ####
+# View Raster Coordinate Reference System (CRS) in R
+############
+
 # https://epsg.io/2874
 crs(campus_DEM, proj = TRUE)
 crs(campus_DEM)
 
+
+# Calculate Raster Min and Max Values
+############
 
 # min and max values
 minmax(campus_DEM)
 # these are showing NaN now:
 max(values(campus_DEM))
 
+# Data Tip - Set min and max values
+############
+
 campus_DEM <- setMinMax(campus_DEM)
 
+# Raster Bands
+############
 nlyr(campus_DEM)
 
 str(campus_DEM)
 
 # ### Dealing with Missing Data ###
+############
+
 # https://datacarpentry.github.io/r-raster-vector-geospatial/01-raster-structure.html
-# #dealing-with-missing-data
 
 # NAs often wind up being the data
 # around the edges but they don't have to be.
@@ -114,6 +133,8 @@ sum(is.na(campus_DEM_df$elevation))
 
 ############
 # challenge: look at a different raster's nodata values?
+############
+
 campus_bath <- rast("source_data/SB_bath.tif")
 crs(campus_bath)
 str(campus_bath)
@@ -129,14 +150,33 @@ summary(campus_bath)
 # you betcha.
 # 69366 of them
 
+# CHANGE THE bath name for convenience:
+names(campus_bath_df)[names(campus_bath_df) == 'Bathymetry_2m_OffshoreCoalOilPoint'] <- 'depth'
+str(campus_bath_df)
+
+
+# Bad Data Values in Rasters
+############
+
+# Find Bad Data Values
+###################
+
+# the episode doesn't do this very well. It highlights
+# values above 400m at Harvard.
+# does our Batymetry have positive values?
+
+# So for example: why would bathymetry have a max value of 1?
+summary(campus_bath_df)
+
+# histogram to look at the elevation distribution
+
 ### bad data example goes here.
+
 # both these warning messages tells us there's more going on.
 # ie: values out of scale range
 
-
 ggplot() +
   geom_histogram(data = campus_DEM_df, aes(elevation)) 
-
 ggplot() +
   geom_histogram(data = campus_bath_df, aes(Bathymetry_2m_OffshoreCoalOilPoint))
 
@@ -148,31 +188,6 @@ describe("source_data/campus_DEM.tif")
 # [64] "  NoData Value=nan"
 
 
-###################
-
-
-# histogram to look at the elevation distribution
-
-# for argument's sake, this should be a different dataset. 
-# like a DSM instead of DEM??
-
-ggplot() +
-  geom_histogram(data = campus_DEM_df, aes(elevation))+
-  ggtitle("Histogram default bins")
-
-ggplot() +
-  geom_histogram(data = campus_DEM_df, aes(elevation), bins = 5)+
-  ggtitle("Historgram 5 bins")
-
-
-ggplot() +
-  geom_histogram(data = campus_DEM_df, aes(elevation), bins = 20)+
-  ggtitle("Map ?")
-
-
-# at some point, the negative values disappear from the visualization
-# that's not helpful.
-
 # Challenge:
 # Explore metadata of the hillshade raster (campus_hillshade.tif)
 describe("source_data/campus_hillshade.tif")
@@ -183,4 +198,24 @@ campus_hillshade_df <- as.data.frame(campus_hillshade)
 str(campus_hillshade)
 str(campus_hillshade_df)
 
+# Create A Histogram of Raster Values
+###################
+str(campus_bath_df)
 
+ggplot() +
+  geom_histogram(data = campus_bath_df, aes(depth))+
+  ggtitle("Histogram default bins")
+
+ggplot() +
+  geom_histogram(data = campus_bath_df, aes(depth), bins = 5)+
+  ggtitle("Histogram 5 bins")
+
+ggplot() +
+  geom_histogram(data = campus_bath_df, aes(depth), bins = 20)+
+  ggtitle("Histogram 20 bins")
+
+# at some point, the positive values disappear from the visualization
+# that's not helpful.
+
+# Challenge: Explore Raster Metadata
+###################
