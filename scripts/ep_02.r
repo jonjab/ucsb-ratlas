@@ -72,11 +72,28 @@ campus_DEM_df <- campus_DEM_df %>%
 
 # this shows sea level at 2-5 ft
 
-
 ggplot() + 
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
   coord_quickmap() +
   ggtitle("Map")
+
+
+
+# Challenge: Plot Using Custom Breaks
+# ##################################
+
+# use custom bins to figure out a good place to put sea level
+# what is really 'zero' around here?
+
+custom_bins <- c(-3, 0, 4, 4.8, 5, 10, 25, 40, 70, 100, 150, 200)
+custom_bins <- c(-3, 0, 4.9, 5.1, 7.5, 10, 25, 40, 70, 100, 150, 200)
+
+campus_DEM_df <- campus_DEM_df %>% 
+  mutate(binned_DEM = cut(elevation, breaks = custom_bins))
+
+ggplot() + 
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
+  ggtitle("Where is sea level ?")
 
 
 # More Plot Formatting
@@ -155,7 +172,7 @@ ggplot() +
   ggtitle("Hillshade")+
   coord_quickmap()
 
-
+# ### Layering Rasters
 # #############
 # now plot the hillshade on top of the DEM:
 
@@ -236,4 +253,6 @@ str(campus_DEM_df)
 # our challenge: 
 # try the next zoom out? 
 # that would be something like map 4
- 
+
+# Challenge: Make a 2-layer overlay for a 2nd set of rasters
+# try the bathymetry (if we have a hillshade)
