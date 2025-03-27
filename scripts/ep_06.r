@@ -4,8 +4,7 @@
 
 
 library(sf)
-library(terra)
-library(tidyverse)
+library(ggplot2)
 
 
 # clean the environment and hidden objects
@@ -30,15 +29,51 @@ gg_labelmaker <- function(plot_num){
 
 
 
-# compare extents of 2 bike path files
-# these will give a warning message about projections
+# Import Vector Data
+####################
+
+# a point, a line, and a polygon
+
+
+# the lesson uses a simple aoi. we can do better
+birds_habitat <- st_read("source_data/NCOS_Shorebird_Foraging_Habitat/NCOS_Shorebird_Foraging_Habitat.shp")
+
+# Spatial Metadata
+st_geometry_type(birds_habitat)
+# yes, some shapefiles can be mixed
+
+st_crs(birds_habitat)
+
+st_bbox(birds_habitat)
+birds_habitat
+
+# Plot a vector layer
+# ####################
+
+# this is kind of fun:
+plot(st_bbox(birds_habitat))
+
+# but the lesson wants to keep using ggplot:
+ggplot() +
+  geom_sf(data = birds_habitat, size = 3, color = "black", fill = "cyan1") +
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  coord_sf()
+
+# Challenge: Import Line and Point Vector Layers
+# ###############################
+
 bikes_icm <- st_read("source_data/icm_bikes/bike_paths/bikelanescollapsedv8.shp")
 bikes_library <- st_read("source_data/library_bikes/3853-s3-282-2u5_p255_2016_u5/bikelanescollapsedv8.shp")
-birds_habitat <- st_read("source_data/NCOS_Shorebird_Foraging_Habitat/NCOS_Shorebird_Foraging_Habitat.shp")
 birds_points <- st_read("source_data/NCOS_Bird_Survey_Data_20190724shp/NCOS_Bird_Survey_Data_20190724_web.shp")
 
+# Answer the following questions:
+#  What type of R spatial object is created when you import each layer?
+#  What is the CRS and extent for each object?
+#  Do the files contain points, lines, or polygons?
+#  How many spatial objects are in each file?
 
-
+#######################
+# bonus content:
 
 # you can see when you create the object that the CRS's
 # and bounding boxes are different
@@ -118,13 +153,6 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
-
-# POINTS
-# bird habitat polygons
-ggplot() +
-  geom_sf(data=birds_habitat, color = "red") +
-  ggtitle(gg_labelmaker(current_ggplot+1)) +
-  coord_sf()
 
 
 # all together
