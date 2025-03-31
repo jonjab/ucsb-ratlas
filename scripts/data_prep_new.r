@@ -1,14 +1,15 @@
 # rAtlas data download and prep
 
-library(terra)
+#library(terra)
 library(curl)
 library(googledrive)
-library(tidyverse)
-library(sf)
-library(ff)
+#library(tidyverse)
+#library(sf)
+#library(ff)
 
 dir.create("downloaded_data", showWarnings = FALSE)
-
+dir.create("source_data", showWarnings = FALSE)
+dir.create("images", showWarnings = FALSE)
 
 # 1 establish a connection to our public google drive 
 #   later on from S3

@@ -175,9 +175,11 @@ for (images in scene_paths) {
 ndvi_series_names <- list.files("output_data/ndvi")
 ndvi_series_names
 
-testraster <- rast("output_data/ndvi/20230912_175450_00_243.tif")
-summary(values(testraster))
+testraster_path <- paste("output_data/ndvi/", ndvi_series_names[1], sep="")
 
+testraster <- rast(testraster_path)
+  
+  
 # check the files's resolutions and 
 # keep only the
 # 554 x 885 now that we are downsampled
