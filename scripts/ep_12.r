@@ -3,6 +3,7 @@ library(terra)
 library(scales)
 library(tidyverse)
 library(ggplot2)
+library(sf)
 
 # clean the environment and hidden objects
 rm(list=ls())
@@ -25,11 +26,13 @@ scene_paths <- list.files("source_data/planet/planet/20232024_UCSB_campus_Planet
                           full.names = TRUE,
                           pattern = "8b_clip.tif")
 scene_paths
-ucsb_extent <- vect("source_data/planet/planet/ucsb_60sqkm_planet_extent.geojson")
+campus_crs <- rast("source_data/campus_DEM.tif") %>% crs()
+
+ucsb_extent <- project(x=ucsb_extent, y=campus_crs)
+crs(ucsb_extent)
 
 # someplace to put our images
 dir.create("output_data/ndvi", showWarnings = FALSE)
-
 
 # calculate the NDVIs and fill in (extend) to the AOI
 # loop
