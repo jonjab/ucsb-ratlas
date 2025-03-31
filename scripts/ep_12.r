@@ -10,8 +10,10 @@ rm(list=ls())
 
 current_episode <- 12
 
-
 getwd()
+
+# we'll need this campus extent
+ucsb_extent <- vect("source_data/planet/planet/ucsb_60sqkm_planet_extent.geojson")
 
 
 #### create the little tiffs
@@ -25,10 +27,8 @@ getwd()
 scene_paths <- list.files("source_data/planet/planet/20232024_UCSB_campus_PlanetScope/PSScene/",
                           full.names = TRUE,
                           pattern = "8b_clip.tif")
-scene_paths
-campus_crs <- rast("source_data/campus_DEM.tif") %>% crs()
-
-ucsb_extent <- project(x=ucsb_extent, y=campus_crs)
+scene_crs <- rast("source_data/planet/planet/20232024_UCSB_campus_PlanetScope/PSScene/20240802_185136_33_24d3_3B_AnalyticMS_SR_8b_clip.tif") %>% crs()
+ucsb_extent <- project(x=ucsb_extent, y=scene_crs)
 crs(ucsb_extent)
 
 # someplace to put our images
