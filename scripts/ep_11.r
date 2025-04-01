@@ -146,6 +146,7 @@ ncos_rgb <- project(ncos_rgb, campus_projection)
 
 crs(ncos_rgb) == crs(campus_DEM)
 
+#this takes a long time and looks ugly
 ggplot() +
   geom_raster(data = campus_DEM_df, aes(x = x, y = y, fill = elevation)) +
   scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
@@ -236,6 +237,7 @@ str(west_us)
 # why do we project this into itself?
 crs(west_us) == crs(west_us_cropped)
 
+#this takes a long time too 
 west_us_cropped <- project(x=west_us, y=west_us)
 crs(west_us)
 
@@ -306,4 +308,4 @@ ggplot() +
       geom_raster(data = campus_bath_df, 
               aes(x=x, y=y, alpha=bathymetry)) +
   coord_sf()
-  
+#the output still didnt output, empty ggplot  
