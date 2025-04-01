@@ -65,11 +65,14 @@ lines or polygons is it this [bird habitat
 file?](https://drive.google.com/file/d/1ssytmTbpC1rpT5b-h8AxtvSgNrsGQVNY/view?usp=drive_link)
 – yes bird habitats
 
-### Map 3 An atlas page layout with 4 insets:
-Each inset (4-5-6) is a png created by map4-5-6.r.
+### Map 7 An atlas page layout with 4 insets:
+Top triptic is maps 3-4-5 zoom-in.
+
 The final ggplots in that script are the inputs for
 map 3.
+
 ![Map 3 DRAFT](/final_output/map_3_2025_march.png "Map 3")
+![Map 3 currently](/final_output/map3_2025_march.png "Maps 4-5-6-7")
 
 #### map 4 California Overview
 Portrait 3x4
@@ -78,20 +81,21 @@ Western US
 #### map 5 The Bite of California
 Portrait 3x4
 Needs to be further zoomed in. 
+Maps 3-4-5: ![Triplet zoom in](/images/3-zoom.png "Draft zoom.")
 
 #### map 6 Extended Campus
 (issue #14)
 Landscape 4x3 \* extended campus will have maptiles background? \*
 Bacara-ish to 154/101 
 
-Maps 4-5-6: ![Triplet zoom in](/images/3-zoom.png "Draft zoom.")
+
 
 #### Map 7 Campus Detail
 Wide Landscape 9x16ish? \* A stripped down version of #1
 
 
 ### Map 3 sketch:
-![Map 3 currently](/final_output/map3_2025_march.png "Maps 4-5-6-7")
+
 ![Overview map](/images/overview_map.jpg "Sketch")
 
 
