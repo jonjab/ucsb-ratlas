@@ -95,10 +95,8 @@ Wide Landscape 9x16ish? \* A stripped down version of #1
 
 
 ### 8 RS Imagery
-Include a Planet feed. (Issue #15)
-For starters, this will be several pre-fetched campus images.
-4- and 8- bands!
-
+For starters, this will be one 8-band image
+visualized several different ways.
 
 ### 9 Analysis: Find landscape depressions on Campus DEM
 ie: identify vernal pools
