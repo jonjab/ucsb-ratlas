@@ -97,6 +97,7 @@ Wide Landscape 9x16ish? \* A stripped down version of #1
 ### 8 RS Imagery
 For starters, this will be one 8-band image
 visualized several different ways.
+![4 color images](readme_images/map_08.png "Map 8: 4 PlanetScopes")
 
 ### 9 Analysis: Find landscape depressions on Campus DEM
 ie: identify vernal pools
