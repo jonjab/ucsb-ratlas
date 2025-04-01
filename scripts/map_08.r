@@ -43,6 +43,7 @@ library(curl)
 # (get_auth)
 # plnt_quota
 
+#this is going away, no api
 curl(url="https://api.planet.com/features/v1/ogc/my?format=api", open = "")
 
 #load an 8-band image: data_prep puts it here:
