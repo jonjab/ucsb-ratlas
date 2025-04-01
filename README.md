@@ -58,8 +58,8 @@ Something like this:
 
 ### Map 2 A stylized thematic map with trees, water, and bikeways
 
-(Issue #8) ![map 2 with tree
-species](/images/map2_TreeSpecies.png "Map 2 tree height")Trees from
+Something like this:
+![map 2 with tree species](/readme_images/map2_TreeSpecies.png "Map 2 tree height")Trees from
 ArcGIS Online: Water: NCOS upper lagoon shapefile of bathymetric topo
 lines or polygons is it this [bird habitat
 file?](https://drive.google.com/file/d/1ssytmTbpC1rpT5b-h8AxtvSgNrsGQVNY/view?usp=drive_link)
