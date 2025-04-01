@@ -71,7 +71,6 @@ Top triptic is maps 3-4-5 zoom-in.
 The final ggplots in that script are the inputs for
 map 3.
 
-![Map 3 DRAFT](/final_output/map_3_2025_march.png "Map 3")
 ![Map 3 currently](/final_output/map3_2025_march.png "Maps 4-5-6-7")
 
 #### map 4 California Overview
