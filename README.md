@@ -54,7 +54,7 @@ aspect ratio, except where noted.
     -   this will come later 
     
 Something like this:
-![Map 1 DRAFT](/images/map1.3.png "Map 1.3")
+![Map 1 DRAFT](/final_output/map_01.png "Map 1")
 
 ### Map 2 A stylized thematic map with trees, water, and bikeways
 
@@ -69,6 +69,7 @@ file?](https://drive.google.com/file/d/1ssytmTbpC1rpT5b-h8AxtvSgNrsGQVNY/view?us
 Each inset (4-5-6) is a png created by map4-5-6.r.
 The final ggplots in that script are the inputs for
 map 3.
+![Map 3 DRAFT](/final_output/map_3_2025_march.png "Map 3")
 
 #### map 4 California Overview
 Portrait 3x4
