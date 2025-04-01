@@ -201,8 +201,7 @@ plot(sb_channel_extent)
 
 
 # get the bathymetry data
-# and is also Zoom 3?
-campus_bath <- rast("output_data/campus_bath.tif")
+campus_bath <- rast("source_data/SB_bath.tif")
 plot(campus_bath)
 campus_bath_df <- as.data.frame(campus_bath, xy=TRUE) %>%
   rename(bathymetry = Bathymetry_2m_OffshoreCoalOilPoint)
