@@ -44,3 +44,10 @@ library(curl)
 # plnt_quota
 
 curl(url="https://api.planet.com/features/v1/ogc/my?format=api", open = "")
+
+#load an 8-band image: data_prep puts it here:
+#  source_data/UCSB_campus_23-24_psscene_analytic_8b_sr_udm2
+#plot out 3 different combinations:
+#  natural color
+#  false-color IR
+#  something pretty or odd
