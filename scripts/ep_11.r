@@ -107,7 +107,7 @@ ggplot() +
 # they come into the lesson in ep. 6.
 
 greatercampus <- st_read("source_data/greater_UCSB-campus-aoi.geojson")
-greatercampus60km <- st_read("source_data/ucsb_60sqkm_planet_extent.geojson")
+greatercampus60km <- st_read("source_data/planet/planet/ucsb_60sqkm_planet_extent.geojson")
 
 ggplot() +
   geom_sf(data=greatercampus, color = "red") +
