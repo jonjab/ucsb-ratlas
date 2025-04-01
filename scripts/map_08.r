@@ -104,4 +104,5 @@ plotRGB(planet_scene, stretch = "hist",
         main = "pretty")
 
 
-  
+# reset your par()
+par(mfrow = c(1,1))
