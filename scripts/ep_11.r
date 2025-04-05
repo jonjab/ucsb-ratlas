@@ -46,6 +46,7 @@ gg_labelmaker <- function(plot_num){
 
 # ep 5 objects:
 ncos_rgb <- rast("source_data/cirgis_1ft/w_campus_1ft.tif")
+ncos_rgb <- aggregate(ncos_rgb, fact = 4)
 
 # ep 7 objects
 # shapefiles
@@ -119,13 +120,6 @@ ggplot() +
 # greatercampus <- project(greatercampus, from = to = )
 
 crs(greatercampus) == crs(campus_DEM)
-
-
-# get a geojson and turn that into a vector
-# ncos_aoi <- geojson_sf("source_data/ncos_aoi.geojson", expand_geometries = TRUE )
-
-# plot(ncos_aoi)
-# crs(ncos_aoi)
 
 colnames(campus_DEM_df)
 
