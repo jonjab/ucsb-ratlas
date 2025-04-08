@@ -90,6 +90,54 @@ ggplot() +
 
 
 # Crop a Raster Using Vector Extent
+# ###############################
+
+# this should be cropping campus DEM to birds.
+plot(birds)
+plot(campus_DEM)
+
+# now make it a ggplot 
+str(campus_DEM_df)
+
+# bad overlay
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  geom_sf(data=birds, color = "blue", alpha = 0.5) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Birds") +
+  coord_sf()
+
+crs(birds) == crs(campus_DEM)
+birds <- st_transform(birds, crs(campus_DEM))
+
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  geom_sf(data=birds, color = "blue", alpha = 0.5) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Birds") +
+  coord_sf()
+
+# now croppy croppy
+NCOS_DEM <- crop(x=campus_DEM, y=birds)
+NCOS_DEM_df <- as.data.frame(NCOS_DEM, xy = TRUE) %>% 
+  rename(elevation = greatercampusDEM_1_1) 
+
+ggplot() +
+  geom_raster(data = NCOS_DEM_df, aes(x=x, y=y, fill=elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  geom_sf(data=birds, color = "blue", alpha = 0.5) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Birds") +
+  coord_sf()
+
+
+
+# Challenge: Crop to Vector Points Extent
+# ##########################
+
+# was birds my only point file?
+
+
+
 
 # recreate a raster with a vector extent overlaid on it
 # from ep 5
@@ -101,40 +149,43 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
-
 # campus Areas of Interest (AOIs) as geojson
-# use these AOIs as the extent to crop the raster?
+# use one of these AOIs as the extent to crop the raster?
 # they come into the lesson in ep. 6.
-
 greatercampus <- st_read("source_data/greater_UCSB-campus-aoi.geojson")
 greatercampus60km <- st_read("source_data/planet/planet/ucsb_60sqkm_planet_extent.geojson")
 
 ggplot() +
-  geom_sf(data=greatercampus, color = "red") +
-  geom_sf(data=greatercampus60km, color = "blue") +
-  geom_spatraster_rgb(data=ncos_rgb) +
+  geom_raster(data=campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
   coord_sf()
 
 # from episode 3 we know:
 # greatercampus <- project(greatercampus, from = to = )
 
 crs(greatercampus) == crs(campus_DEM)
+crs(greatercampus60km) == crs(campus_DEM)
+crs(greatercampus60km) == crs(greatercampus)
 
+campus_DEM <- project(campus_DEM, greatercampus)
+# remake dataframe
+campus_DEM_df <- as.data.frame(campus_DEM, xy = TRUE, na.rm=FALSE)
+names(campus_DEM_df)[names(campus_DEM_df) == 'greatercampusDEM_1_1'] <- 'elevation'
+
+# now overlay
+ggplot() +
+  geom_sf(data=greatercampus, color = "red") +
+  geom_sf(data=greatercampus60km, color = "blue") +
+  geom_raster(data=campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
+  coord_sf()
+
+# that's still not a very good overlay for cropping. :(
+# somewhere below we crop to NCOS
 
 # get a geojson and turn that into a vector
 # ncos_aoi <- geojson_sf("source_data/ncos_aoi.geojson", expand_geometries = TRUE )
 
 # plot(ncos_aoi)
 # crs(ncos_aoi)
-
-colnames(campus_DEM_df)
-
-# projection error
-# ggplot() +
-#  geom_raster(data = campus_DEM_df, aes(x = x, y = y, fill = elevation)) +
-#  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
-#  geom_polygon(data = ncos_aoi, color = "blue", fill = NA) +
-#  coord_sf()
 
 crs(ncos_rgb) == crs(campus_DEM)
 campus_projection <- crs(campus_DEM)
@@ -143,21 +194,19 @@ str(ncos_rgb)
 
 # from episode 3 we know:
 ncos_rgb <- project(ncos_rgb, campus_projection)
-
 crs(ncos_rgb) == crs(campus_DEM)
 
+# this shows NCOS over Campus DEM
 ggplot() +
   geom_raster(data = campus_DEM_df, aes(x = x, y = y, fill = elevation)) +
   scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
   geom_spatraster_rgb(data=ncos_rgb) +
-  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" NCOS RGB over Campus DEM") +
   coord_sf()
 
 
-
-
-
-# now we crop
+# ####################
+# this is cropping one raster to the extent of another raster.
 campus_DEM_cropped <- crop(x=campus_DEM, y=ncos_rgb)
 # remake our dataframe and reset the attribute name:
 campus_DEM_cropped_df <- as.data.frame(campus_DEM_cropped, xy = TRUE, na.rm=FALSE)
@@ -185,6 +234,8 @@ ggplot() +
 #  geom_sf(data=NEED A SQUARE, color= "blue", fill=NA) +
   coord_sf()
 
+
+# tuesday reading stopping point ###################################
 # the lesson goes on to show the extents of a bunch of our datasets
 # but the objects aren't loaded. and the lesson narrative is
 # 'which is the biggest?'
@@ -307,3 +358,4 @@ ggplot() +
               aes(x=x, y=y, alpha=bathymetry)) +
   coord_sf()
   
+# I really did edit this
