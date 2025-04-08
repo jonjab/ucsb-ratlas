@@ -27,6 +27,9 @@ map7_row1 <- image_montage(image = c(map4, map5, map6),
               gravity = "center")
 map7_row1
 
+# save that
+image_write(map7_row1, "final_output/map7_row_1.png", format = "png")
+
 map7 <- image_montage(image = c(map7_row1, map7),
                       tile = "1x2",
                       geometry = "4800x1200")
