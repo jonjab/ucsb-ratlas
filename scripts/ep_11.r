@@ -226,6 +226,7 @@ ggplot() +
 # ####################
 # this is cropping one raster to the extent of another raster.
 campus_DEM_cropped <- crop(x=campus_DEM, y=ncos_rgb)
+plot(campus_DEM_cropped)
 
 # remake our dataframe and reset the attribute name:
 campus_DEM_cropped_df <- as.data.frame(campus_DEM_cropped, xy = TRUE, na.rm=FALSE)
