@@ -1,5 +1,5 @@
 # map 3-4-5 is a tryptic,
-# that runs across the top of map 7
+# that runs horizontally on top of map 7
 # zooming in to campus
 # the zoom to Cali locator sheet
 

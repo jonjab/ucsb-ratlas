@@ -373,5 +373,13 @@ ggsave(
   units = 'in'
 )
 
+ggsave(
+  "readme_images/map2_TreeSpecies.png",
+  plot = map2_gg5,
+  width = 16, height = 9,
+  dpi = 500,
+  units = 'in'
+)
+
 # add IV buildings as in map 1
 # add a background?

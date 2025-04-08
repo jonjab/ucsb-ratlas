@@ -3,7 +3,7 @@
 # vector - raster integration
 
 # cropping rasters
-
+getwd()
 
 # library(raster)
 library(tidyverse)
@@ -46,6 +46,7 @@ gg_labelmaker <- function(plot_num){
 
 # ep 5 objects:
 ncos_rgb <- rast("source_data/cirgis_1ft/w_campus_1ft.tif")
+ncos_rgb <- aggregate(ncos_rgb, fact = 4)
 
 # ep 7 objects
 # shapefiles
@@ -92,7 +93,7 @@ ggplot() +
 # Crop a Raster Using Vector Extent
 # ###############################
 
-# this should be cropping campus DEM to birds.
+# crop campus DEM to the extent of birds.
 plot(birds)
 plot(campus_DEM)
 
@@ -166,7 +167,7 @@ crs(greatercampus) == crs(campus_DEM)
 crs(greatercampus60km) == crs(campus_DEM)
 crs(greatercampus60km) == crs(greatercampus)
 
-campus_DEM <- project(campus_DEM, greatercampus)
+campus_DEM <- project(campus_DEM, crs(greatercampus))
 # remake dataframe
 campus_DEM_df <- as.data.frame(campus_DEM, xy = TRUE, na.rm=FALSE)
 names(campus_DEM_df)[names(campus_DEM_df) == 'greatercampusDEM_1_1'] <- 'elevation'
@@ -186,6 +187,14 @@ ggplot() +
 
 # plot(ncos_aoi)
 # crs(ncos_aoi)
+colnames(campus_DEM_df)
+
+# projection error
+# ggplot() +
+#  geom_raster(data = campus_DEM_df, aes(x = x, y = y, fill = elevation)) +
+#  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+#  geom_polygon(data = ncos_aoi, color = "blue", fill = NA) +
+#  coord_sf()
 
 crs(ncos_rgb) == crs(campus_DEM)
 campus_projection <- crs(campus_DEM)
@@ -193,10 +202,19 @@ campus_projection <- crs(campus_DEM)
 str(ncos_rgb)
 
 # from episode 3 we know:
-ncos_rgb <- project(ncos_rgb, campus_projection)
-crs(ncos_rgb) == crs(campus_DEM)
+campus_DEM <- project(campus_DEM, campus_projection)
+crs(campus_DEM) == crs(campus_DEM)
 
-# this shows NCOS over Campus DEM
+# NCOS over Campus DEM mismatch
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x = x, y = y, fill = elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  geom_spatraster_rgb(data=ncos_rgb) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" NCOS RGB over Campus DEM") +
+  coord_sf()
+
+ncos_rgb <- project(ncos_rgb, campus_projection)
+
 ggplot() +
   geom_raster(data = campus_DEM_df, aes(x = x, y = y, fill = elevation)) +
   scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
@@ -208,14 +226,34 @@ ggplot() +
 # ####################
 # this is cropping one raster to the extent of another raster.
 campus_DEM_cropped <- crop(x=campus_DEM, y=ncos_rgb)
+
 # remake our dataframe and reset the attribute name:
 campus_DEM_cropped_df <- as.data.frame(campus_DEM_cropped, xy = TRUE, na.rm=FALSE)
 str(campus_DEM_cropped_df)
 names(campus_DEM_cropped_df)[names(campus_DEM_cropped_df) == 'greatercampusDEM_1_1'] <- 'elevation'
 str(campus_DEM_cropped_df)
 
+ggplot() +
+  geom_spatraster_rgb(data=ncos_rgb) +
+  geom_raster(data = campus_DEM_cropped_df, aes(x = x, y = y, fill = elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" NCOS RGB over Campus DEM") +
+  coord_sf()
 
-# st_as_sfc is new here?
+# add some transparency
+ggplot() +
+  geom_spatraster_rgb(data=ncos_rgb) +
+  geom_raster(data = campus_DEM_cropped_df, aes(x = x, y = y, fill = elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  aes(alpha = 0.3) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" NCOS RGB over Campus DEM") +
+  coord_sf()
+
+
+# Crop a Raster Using Vector Extent
+# #########################################
+# st_as_sfc is new here
+# it turns the raster bbox extent of campus_DEM into a vector we can use.
 ggplot() +
   geom_sf(data = st_as_sfc(st_bbox(campus_DEM)), fill = "green",
           color = "green", alpha = .2) +
@@ -224,14 +262,16 @@ ggplot() +
   scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
   coord_sf()
 
-# same extents
-# with a tiny strange mismatch that we 
+# the cropped version of campus_DEM should have the same extents
+# but we can see a a tiny strange mismatch that we 
 # should be able to explain
 ggplot() +
   geom_raster(data = campus_DEM_cropped_df,
               aes(x = x, y = y, fill = elevation)) +
   scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
-#  geom_sf(data=NEED A SQUARE, color= "blue", fill=NA) +
+  geom_sf(data = st_as_sfc(st_bbox(campus_DEM_cropped)), 
+          color = "blue", 
+          alpha = .2) +
   coord_sf()
 
 
@@ -260,13 +300,13 @@ campus_bath_df <- as.data.frame(campus_bath, xy=TRUE) %>%
 # get low-res data
 # zoom 1, aka, Map 4 from map_4_5_6.r
 west_us <- rast("source_data/dem90_hf/dem90_hf.tif")
-plot(west_us)
+# plot(west_us)
 polys(sb_channel_extent)
 
 # the above overlays don't work because of different CRSs
 sb_channel_extent <- project(sb_channel_extent, west_us)
 # this time it does:
-plot(west_us)
+# plot(west_us)
 polys(sb_channel_extent)
 
 # west_us_df <- as.data.frame(west_us, xy=TRUE)
@@ -276,7 +316,6 @@ polys(sb_channel_extent)
 # make some gg overlays
 
 west_us_cropped <- crop(x=west_us, y=ext(sb_channel_extent))
-
 plot(west_us_cropped)
 
 
@@ -285,10 +324,10 @@ str(west_us)
 
 # project it to match west_us
 # why do we project this into itself?
-crs(west_us) == crs(west_us_cropped)
+# crs(west_us) == crs(west_us_cropped)
 
-west_us_cropped <- project(x=west_us, y=west_us)
-crs(west_us)
+# west_us_cropped <- project(x=west_us, y=west_us)
+crs(west_us_cropped)
 
 # now you can plot them together
 # to confirm that's the correct extent
@@ -297,6 +336,46 @@ plot(west_us_cropped)
 polys(sb_channel_extent, col=NA)
 
 
+  
+# Define an Extent
+# ########################
+
+# from scratch!
+# what are appropriate local numbers?
+new_extent <- ext(1480000, 1560000, -2250000, -2050000)
+class(new_extent)
+# CHM_HARV_manual_cropped <- crop(x = CHM_HARV, y = new_extent)
+
+# this is a good extent to play with.
+plot(sb_channel_extent)
+
+# these don't work
+# campus_DEM_cropped <- crop(x=campus_DEM, y=new_extent)
+# campus_DEM_cropped <- crop(x=campus_DEM, y=sb_channel_extent)
+
+
+
+# Extract Raster Pixels Values Using Vector Polygons
+# ########################
+
+# aka: buffering.
+# tree_height <- extract(x = CHM_HARV, y = aoi_boundary_HARV, raw = FALSE)
+# str(tree_height)
+
+# Summarize Extracted Raster Values
+# ########################
+# mean_tree_height_AOI <- extract(x = CHM_HARV, y = aoi_boundary_HARV,
+#                              fun = mean)
+# Extract Data using x,y Locations
+# Challenge: Extract Raster Height Values For Plot Locations
+
+
+
+
+
+# I dunno what all this stuff is.
+# leftover cruft?
+################################################################
 
 buildings <- st_read("source_data/Campus_Buildings/Campus_Buildings.shp")
 
@@ -326,8 +405,8 @@ crs(buildings_box)
 # neither bath nor buildings have crss
 ggplot () +
   geom_sf(data = campus_box, color = "black", fill = NA) +
-#  geom_sf(data = bath_box, color = "red", fill = NA) +
-#  geom_sf(data = buildings_box, color = "purple", fill = NA) +
+  #  geom_sf(data = bath_box, color = "red", fill = NA) +
+  #  geom_sf(data = buildings_box, color = "purple", fill = NA) +
   coord_sf()
 
 
@@ -339,7 +418,8 @@ ggplot () +
 # oops. we need to re-project
 
 project_from <- crs(campus_DEM) 
-my_res <- res(raster("source_data/campus_DEM.tif") )
+
+my_res <- res(campus_DEM)
 
 crs(campus_bath)
 crs(campus_DEM)
@@ -349,13 +429,11 @@ str(campus_DEM_df)
 
 # plot everyone together
 # this won't overlay
-ggplot() +
-  geom_sf(data = buildings_extent_shape, color = "black", fill = NA) +
-  geom_raster(data = campus_DEM_df, 
-              aes(x=x, y=y, fill=elevation)) +
-  scale_fill_viridis_c(na.value="NA")+
-      geom_raster(data = campus_bath_df, 
-              aes(x=x, y=y, alpha=bathymetry)) +
-  coord_sf()
-  
-# I really did edit this
+#ggplot() +
+#  geom_sf(data = buildings_extent_shape, color = "black", fill = NA) +
+#  geom_raster(data = campus_DEM_df, 
+#              aes(x=x, y=y, fill=elevation)) +
+#  scale_fill_viridis_c(na.value="NA")+
+#      geom_raster(data = campus_bath_df, 
+#              aes(x=x, y=y, alpha=bathymetry)) +
+#  coord_sf()
