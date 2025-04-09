@@ -67,49 +67,54 @@ file?](https://drive.google.com/file/d/1ssytmTbpC1rpT5b-h8AxtvSgNrsGQVNY/view?us
 – yes bird habitats
 
 ### Map 7 An atlas page layout with 4 insets:
-Top triptic is maps 3-4-5 zoom-in.
-
-The final ggplots in that script are the inputs for
-map 3.
+Top tryptic is maps 3-4-5 zoom-in.
+       Then Map 6
 
 ![Map 3 currently](/final_output/map3_2025_march.png "Maps 4-5-6-7")
 
-#### map 4 California Overview
+#### map 3 California Overview
 Portrait 3x4
 Western US
 
-#### map 5 The Bite of California
+#### map 4 The Bite of California
 Portrait 3x4
 Needs to be further zoomed in. 
 Maps 3-4-5: ![Triplet zoom in](/final_output/map7_row_1.png "Draft zoom.")
 
-#### map 6 Extended Campus
+#### map 5 Extended Campus
 (issue #14)
 Landscape 4x3 \* extended campus will have maptiles background? \*
 Bacara-ish to 154/101 
 
 
-
-#### Map 7 Campus Detail
-Wide Landscape 9x16ish? \* A stripped down version of #1
-
-
-### Map 3 sketch:
-
-![Overview map](/images/overview_map.jpg "Sketch")
+#### Map 6 Campus Detail
+Wide Landscape 9x16ish? \* A stripped down version of map #1,
+sympolized to match the look of 3-4-5
 
 
-### 8 RS Imagery
+#### Map 3 sketch: 
+we used to have a jpg of the whiteboard here.
+
+
+### Map 8 RS Imagery
 For starters, this will be one 8-band image
-visualized several different ways.
+visualized several different ways. Which is an expansion of episode
+5. 
+Something like this:
 ![4 color images](readme_images/map_08.png "Map 8: 4 PlanetScopes")
 
 ### 9 Analysis: Find landscape depressions on Campus DEM
-ie: identify vernal pools
+ie: identify vernal pools.
+Find elevations > sea level that are surrounded by nearby neighbors that are higher.
 
 ### 10 Analysis: Find bike paths that cross water?
 
+### Map 11: Look at a Dibblee
+
 ### Map 12  / Episode 12: 12 months of NDVI Raster Stack
+![A bunch of NDVIs](final_output/map12.png "Map 8: 4 PlanetScopes")
+
+
 [UCSB Carpentry](https://ucsbcarpentry.github.io)
 
 [Original lesson -- Introduction to Geospatial Raster and Vector Data
