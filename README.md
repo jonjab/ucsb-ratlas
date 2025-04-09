@@ -81,7 +81,7 @@ Western US
 #### map 5 The Bite of California
 Portrait 3x4
 Needs to be further zoomed in. 
-Maps 3-4-5: ![Triplet zoom in](/images/3-zoom.png "Draft zoom.")
+Maps 3-4-5: ![Triplet zoom in](/final_output/map7_row_1.png "Draft zoom.")
 
 #### map 6 Extended Campus
 (issue #14)
