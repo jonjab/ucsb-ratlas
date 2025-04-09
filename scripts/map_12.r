@@ -342,8 +342,9 @@ ggplot() +
   scale_fill_distiller(palette = "RdYlBu", direction = 1) +
   facet_wrap(~ date) +
   theme_minimal() +
-  ggtitle(gg_labelmaker(current_ggplot+1))
-
+  ggtitle("11 NDVIs. What month is greenest?", subtitle = gg_labelmaker(current_ggplot+1))
+  
+ggsave("final_output/map_12.png", plot=last_plot())
 
 # this is the OR from above.
 # visually we can't see the greenest, so 
