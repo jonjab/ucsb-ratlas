@@ -42,9 +42,16 @@ gg_labelmaker <- function(plot_num){
 # from output folder
 campus_DEM <- rast("output_data/ep_3_campus_DEM.tif")
 plot(campus_DEM)
+
 # remember: this is the one we cropped, so the 2 extents are the same.
 campus_bath <- rast("output_data/ep_3_campus_bathymetry_crop.tif")
 plot(campus_bath)
+
+
+# Exercise
+# #####################
+# Do the two rasters have the same or different CRSs and resolutions? 
+# Do they both have defined minimum and maximum values?
 
 # do they have the same projections?
 campus_DEM
@@ -54,16 +61,22 @@ campus_bath
 # don't want to read that? Test that:
 crs(campus_DEM) == crs(campus_bath)
 
-# What's the dimension of our raster (number of pixels)?
+# yes
+res(campus_DEM)
+res(campus_bath)
+
+
+# What's the dimension of our rasters (number of pixels)?
+# these are the same because we went to great length in ep 3 to make them the same.
 campus_DEM %>%  
   ncell()
+campus_bath %>%  
+  ncell()
+
 
 summary(campus_DEM)
 str(campus_DEM)
 
-campus_DEM_df <- as.data.frame(campus_DEM, xy=TRUE) %>%
-  rename(elevation = greatercampusDEM_1_1) # rename to match code later
-str(campus_DEM_df)
 
 # Challenge: Why does our dataframe has 701,000 rows?
 # Solution: It's the dimension of the raster (# of pixels) minus the 
@@ -71,10 +84,55 @@ str(campus_DEM_df)
 # If you do summary(campus_DEM) you don't get the total number of NAs
 # so you need to do summary(values(campus_DEM))
 
+
+# Now let's plot them both in ggplot:
+
+campus_DEM_df <- as.data.frame(campus_DEM, xy=TRUE) %>%
+  rename(elevation = greatercampusDEM_1_1) # rename to match code later
+str(campus_DEM_df)
+
+ggplot() +
+  geom_raster(data = campus_DEM_df , 
+              aes(x = x, y = y, fill = elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) + 
+  coord_sf() +
+  ggtitle(gg_labelmaker(current_ggplot+1))
+
 campus_bath_df <- as.data.frame(campus_bath, xy=TRUE) %>%
   rename(bathymetry = Bathymetry_2m_OffshoreCoalOilPoint)
 str(campus_bath_df)
 
+ggplot() +
+  geom_raster(data = campus_bath_df , 
+              aes(x = x, y = y, fill = bathymetry)) +
+  scale_fill_gradientn(name = "Bathymetry", colors = terrain.colors(10)) + 
+  coord_sf() +
+  ggtitle(gg_labelmaker(current_ggplot+1))
+
+# Can we plot them together?
+
+# first let's make a ggplot for bathymetry that's blue like the ocean
+# with the same palette, it's easy
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
+  geom_raster(data = campus_bath_df , 
+              aes(x = x, y = y, fill = bathymetry)) +
+  scale_fill_distiller(name = "Bathymetry", type="seq", palette="Blues") +
+  coord_sf() + 
+  ggtitle(gg_labelmaker(current_ggplot+1))
+
+# but giving them different palettes is difficult:
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
+  scale_fill_distiller(name = "Bathymetry", type="seq", palette="Blues") +
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  coord_sf()
+
+# so what comes next in this narrative?
+  
+  
 
 # best coast line bins from ep 2
 # from ep 2, these are best sea level bins:
@@ -100,10 +158,12 @@ ggplot() +
 
 # raster math to substract 5ft from the DEM
 sea_level <- campus_DEM - 5
+str(sea_level)
 sea_level_df <- as.data.frame(sea_level, xy=TRUE) %>% 
-  rename(elevation = lyr.1) %>%
-  mutate(binned = cut(elevation, breaks=custom_bins))
-
+  rename(elevation = greatercampusDEM_1_1) %>%
+  mutate(binned = cut(elevation, breaks=custom_bins))+
+ggtitle(gg_labelmaker(current_ggplot+1)) +
+str(sea_level_df) 
 
 # Set values below or equal to 0 to NA
 # this is to visually emphasize pixels
