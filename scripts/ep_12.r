@@ -100,11 +100,15 @@ length(ndvi_series_names)
 
 
 
+# episode narrative starts here
+# #################################
 
+
+# RGB Data
+# #### Getting Started
+# #############################
 
 # make a list of all your tiffs
-# these little NDVIs get calculated by map 12.
-#    --make sure you have run map 12 
 ndvi_series_path <- list.files("output_data/ndvi", full.names = TRUE)
 
 # build a raster stack

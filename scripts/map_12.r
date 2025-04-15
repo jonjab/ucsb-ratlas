@@ -21,6 +21,9 @@ gg_labelmaker <- function(plot_num){
   return(plot_text)
 }
 
+# every ggtitle() or labs() should be:
+# ggtitle(gg_labelmaker(current_ggplot+1))
+# end automagic ggtitle           #######
 
 library(scales)
 library(tidyr)
@@ -386,7 +389,8 @@ avg_NDVI_df <- as.data.frame(avg_NDVI, rm.na=FALSE)
 str(avg_NDVI_df)
 
 ggplot(avg_NDVI_df, mapping = aes(Month, MeanNDVI)) +
-  geom_point()
+  geom_point() +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "can't rean this axis")
 
 
 # we'll need weather data to mimic the lesson.

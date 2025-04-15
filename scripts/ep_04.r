@@ -100,35 +100,53 @@ ggplot() +
 
 # raster math to substract 5ft from the DEM
 sea_level <- campus_DEM - 5
+sea_level_df <- as.data.frame(sea_level, xy=TRUE) %>% 
+  rename(elevation = lyr.1) %>%
+  mutate(binned = cut(elevation, breaks=custom_bins))
+
 
 # Set values below or equal to 0 to NA
+# this is to visually emphasize pixels
+# that are now below sea level on our DEM
+# so that our bathymetry data later on
+# makes a nicer overlay 
 sea_level_0 <- app(sea_level, function(x) ifelse(x <=0, NA, x))
 
 # Note: this remove some values in the marsh that are below 0
+# we might want those back later as our 'vernal pools'
+
+# this set of bins works nicely for our local sea level
+summary(sea_level_df)
+custom_sea_bins <- c(-8, -.1, .1, 3, 5, 7.5, 10, 25, 40, 70, 100, 150, 200)
 
 # Make it a data frame and rebinned
-sea_level_df <- as.data.frame(sea_level_0, xy=TRUE) %>% 
+sea_level_0_df <- as.data.frame(sea_level_0, xy=TRUE) %>% 
   rename(elevation = lyr.1) %>%
-  mutate(binned = cut(elevation, breaks=custom_bins))
+  mutate(binned = cut(elevation, breaks=custom_sea_bins))
 
 # to make our scale make sense, we can do 
 # raster math 
 # how would I do this with overlay?
 ggplot() + 
   geom_raster(data = sea_level_df, aes(x=x, y=y, fill = binned)) + 
-  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="negative sea level values") +
   coord_sf() # to keep map's proportions
 
-summary(sea_level_df)
-custom_sea_bins <- c(-8, -.1, .1, 3, 5, 7.5, 10, 25, 40, 70, 100, 150, 200)
+ggplot() + 
+  geom_raster(data = sea_level_0_df, aes(x=x, y=y, fill = binned)) + 
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="zero sea level") +
+  coord_sf() # to keep map's proportions
 
-sea_level_df <- sea_level_df %>% 
+
+
+sea_level_0_df <- sea_level_df %>% 
   mutate(binned = cut(elevation, breaks=custom_sea_bins))
-str(sea_level_df)
+str(sea_level_0_df)
 
 length(custom_sea_bins)
 
 # now sea level is zero.
+# visually, the airport marshes get wet
 ggplot() + 
   geom_raster(data = sea_level_df, aes(x=x, y=y, fill = binned)) +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
