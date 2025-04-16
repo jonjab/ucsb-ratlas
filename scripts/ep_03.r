@@ -161,7 +161,7 @@ ggplot() +
   coord_quickmap()
 
 
-# hide the NA's again
+# hide the NA's
 # scale_alpha doesn't seem to like na.value
 # plot 2 custom binned maps for the sake of the overlay
 ggplot() +
@@ -171,12 +171,31 @@ ggplot() +
   coord_quickmap()
 
 ggplot() +
-    geom_raster(data = bath_df, aes(x=x, y=y, fill = depth)) +
-    geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
-    scale_fill_viridis_c(na.value="NA") +
+  geom_raster(data = bath_df, aes(x=x, y=y, fill = depth)) +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
+  scale_fill_viridis_c(na.value="NA") +
   coord_quickmap()
-  
-  
+
+
+
+## to do
+# ### Deal with Raster Resolutionn 
+
+# the challenges.
+# Challenge: Reproject, then Plot a Digital Terrain Model
+
+# Is there a before-and-after DEM of NCOS?
+
+
+
+
+
+
+
+# maybe nothing past this point is really related to the lesson narrative.
+# ####################################
+
+
 # get a bounding box out of campus DEM to clip the bathymetry.
 # later on we will clip to extent, but for now we will leave it at this:
 
@@ -227,12 +246,5 @@ colnames(campus_bath_df)
 ggplot() +
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
   geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = depth)) +
-      scale_fill_viridis_c(na.value="NA") +
+  scale_fill_viridis_c(na.value="NA") +
   coord_quickmap()
-
-
-## to do
-# ### Raster Resolution 
-
-# the challenges.
-# Is there a before-and-after DEM of NCOS?
