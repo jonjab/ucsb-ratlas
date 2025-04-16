@@ -5,7 +5,8 @@
 
 
 # libraries for this episode:
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
 library(terra)
 
 
@@ -47,7 +48,7 @@ campus_DEM_df <- campus_DEM_df %>%
 
 str(campus_DEM_df)
 
-# ## Raster Projections in R
+# ## Raster Projection in R
 #################################
 
 # ep3 is reprojections. We need a raster in a different projection.
@@ -67,8 +68,7 @@ str(bath_df)
 
 
 summary(bath_df, maxsamp = ncell(bath_df))
-# ^^ remember, those are negative numbers  
-# summary also gives us a hint on ranges
+# summary gives us a hint on ranges
 # for custom bins
 
 # the summary view also shows the pixel coordinates are different--
@@ -80,7 +80,7 @@ ggplot() +
   aes(x=x, y=y, fill=depth) +
   scale_fill_viridis_c() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
-  coord_quickmap()
+  coord_sf()
 
 # histogram helps determine good bins
 ggplot() +
@@ -100,7 +100,10 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_quickmap()
 
-# create a map of DTM layered over hillshade
+
+# 'create a map of DTM layered over hillshade'
+# from the lesson. Ours is:
+# put the coastal DEM over the coastal bathymetry
 # this reproduces the '2 rasters with mismatched projections'
 # part of the lesson
 ggplot() +
@@ -116,6 +119,8 @@ ggplot() +
 # let's remake bath_df with a re-projected raster
 # check the original bathymetry raster projection:
 crs(bath_rast , proj=TRUE)
+crs(campus_DEM , proj=TRUE)
+
 crs(bath_rast, parse=TRUE)
 
 # I need to get projection and resolution objects somewhere.
@@ -126,6 +131,9 @@ res(campus_DEM)
 # ### Reproject Rasters
 #################################
 # We can reproject using the other raster as reference matching projection and resolution
+
+# this is terra project or sf project?
+# terra. We don't load sf in this file. 
 reprojected_bath <- project(bath_rast, campus_DEM)
 reprojected_bath
 
@@ -144,6 +152,7 @@ bath_df <- bath_df %>%
 
 
 # so now they are in the same crs, and overlay!
+# (even if they are not very pretty)
 ggplot() +
   geom_raster(data = bath_df, aes(x=x, y=y, fill = binned_bath)) +
   scale_alpha_binned(range = c(0.15, 0.65), guide = "none") +
@@ -202,7 +211,9 @@ writeRaster(campus_DEM, "output_data/ep_3_campus_DEM.tif",
             overwrite=TRUE)
 
 
-# Note that with the terra package, we could have done both reprojection and cropping at the same time by running:
+# Note that with the terra package, 
+# we dealt with both reprojection and cropping at the same time.
+# did we though? Did we really crop?
 # reprojected_bath <- project(bath_rast, campus_DEM)
 
 campus_bath_df <- as.data.frame(bath_clipped, xy=TRUE) %>% 
