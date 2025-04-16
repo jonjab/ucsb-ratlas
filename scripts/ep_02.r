@@ -57,7 +57,7 @@ ggplot() +
 # go up on a log scale from the coast
 # log scale works better
 # this shows that there's nothing at zero.
-# and a little bit of negative
+# and just a few negative pixels
 ggplot() +
   geom_bar(data = campus_DEM_df, aes(binned_DEM)) +
   scale_y_continuous(trans='log10') +
@@ -70,12 +70,12 @@ custom_bins <- c(-3, 0, 2, 5, 10, 25, 40, 70, 100, 150, 200)
 campus_DEM_df <- campus_DEM_df %>% 
   mutate(binned_DEM = cut(elevation, breaks = custom_bins))
 
-# this shows sea level at 2-5 ft
-
+# this shows that sea level is at 2-5 ft
+# that needs some explanation: in the challenge
 ggplot() + 
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
   coord_quickmap() +
-  ggtitle("Map")
+  ggtitle("Why is sea level 2-5 feet?")
 
 
 
@@ -85,15 +85,18 @@ ggplot() +
 # use custom bins to figure out a good place to put sea level
 # what is really 'zero' around here?
 
-custom_bins <- c(-3, 0, 4, 4.8, 5, 10, 25, 40, 70, 100, 150, 200)
-custom_bins <- c(-3, 0, 4.9, 5.1, 7.5, 10, 25, 40, 70, 100, 150, 200)
+custom_bins_1 <- c(-3, 0, 4, 4.8, 5, 10, 25, 40, 70, 100, 150, 200)
+custom_bins_2 <- c(-3, 0, 4.9, 5.1, 7.5, 10, 25, 40, 70, 100, 150, 200)
 
 campus_DEM_df <- campus_DEM_df %>% 
-  mutate(binned_DEM = cut(elevation, breaks = custom_bins))
+  mutate(binned_DEM = cut(elevation, breaks = custom_bins_1))
 
 ggplot() + 
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
   ggtitle("Where is sea level ?")
+# it appears to be around 5 feet on our DEM.
+
+
 
 
 # More Plot Formatting
@@ -137,17 +140,6 @@ summary(campus_DEM_df$elevation)
 # Axis labels
 # A plot title
 
-# use custom bins to figure out a good place to put sea level
-# what is really 'zero' around here?
-custom_bins <- c(-3, 0, 4, 4.8, 5, 10, 25, 40, 70, 100, 150, 200)
-custom_bins <- c(-3, 0, 4.9, 5.1, 7.5, 10, 25, 40, 70, 100, 150, 200)
-
-campus_DEM_df <- campus_DEM_df %>% 
-  mutate(binned_DEM = cut(elevation, breaks = custom_bins))
-
-ggplot() + 
-  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
-  ggtitle("Where is sea level ?")
 
 
 # Layering Rasters
@@ -170,7 +162,7 @@ ggplot() +
   geom_raster(data = campus_hillshade_df, 
               aes(x=x, y=y, fill = hillshade)) +
   ggtitle("Hillshade")+
-  coord_quickmap()
+  coord_sf()
 
 # ### Layering Rasters
 # #############
@@ -207,13 +199,7 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_quickmap()
 
-# we can't see them, because there are too few.
-# how few?
-summary(campus_DEM_df)
 
-# this attempts to find only negative elevations,
-# but it doesn't work.
-#has.neg <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df$elevation < 0))
 
 
 # challenge:
