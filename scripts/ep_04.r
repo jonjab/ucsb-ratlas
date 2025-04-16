@@ -159,11 +159,13 @@ ggplot() +
 # raster math to substract 5ft from the DEM
 sea_level <- campus_DEM - 5
 str(sea_level)
+
 sea_level_df <- as.data.frame(sea_level, xy=TRUE) %>% 
   rename(elevation = greatercampusDEM_1_1) %>%
-  mutate(binned = cut(elevation, breaks=custom_bins))+
-ggtitle(gg_labelmaker(current_ggplot+1)) +
-str(sea_level_df) 
+  mutate(binned = cut(elevation, breaks=custom_bins))
+
+
+  str(sea_level_df) 
 
 # Set values below or equal to 0 to NA
 # this is to visually emphasize pixels
