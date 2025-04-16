@@ -5,19 +5,12 @@
 # episode 5
 # https://datacarpentry.github.io/r-raster-vector-geospatial/05-raster-multi-band-in-r.html#create-a-three-band-image
 
-
+# This map is all terra!
 
 library(terra)
-
-
-library(geojsonsf)
-library(sf)
-library(ggplot2)
-library(tidyterra)
-library(dplyr)
-# needed to lay out multiple ggplots
-# library(cowplot)
-library(ggpubr)
+# library(geojsonsf)
+# library(sf)
+# library(ggpubr)
 
 
 # set map number
@@ -77,7 +70,7 @@ plotRGB(planet_scene, stretch = "hist",
 plotRGB(planet_scene, stretch = "hist",
         r = 7, g = 5, b = 1,
         axes=TRUE,
-        main = ggtitle(gg_labelmaker(current_ggplot+1)))
+        main = "yellow = green")
 
 # set up my frame
 par(mfrow = c(2,2))
@@ -103,6 +96,9 @@ plotRGB(planet_scene, stretch = "hist",
         r = 7, g = 4, b = 1,
         main = "pretty")
 
+# and save the image
+png("final_output/map8.png")
 
-# reset your par()
+# reset your par() before leaving
 par(mfrow = c(1,1))
+
