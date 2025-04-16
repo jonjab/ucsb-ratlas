@@ -112,7 +112,7 @@ Find elevations > sea level that are surrounded by nearby neighbors that are hig
 ### Map 11: Look at a Dibblee
 
 ### Map 12  / Episode 12: 12 months of NDVI Raster Stack
-![A bunch of NDVIs](final_output/map12.png "Map 8: 4 PlanetScopes")
+![A bunch of NDVIs](final_output/map_12.png "Map 12: A stack of NDVIs")
 
 
 [UCSB Carpentry](https://ucsbcarpentry.github.io)

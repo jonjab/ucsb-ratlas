@@ -137,7 +137,8 @@ describe("source_data/w_campus_1ft/w_campus_1ft.tif")
 # natural_color_sds <- sds(natural_color_brick)
 
 
-# Challenge: What Functions Can Be Used on an R Object of a particular class?
+# Challenge: What Functions Can Be Used on an 
+# R Object of a particular class?
 #
 
 
