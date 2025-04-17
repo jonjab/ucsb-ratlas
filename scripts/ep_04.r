@@ -194,6 +194,8 @@ ggplot() +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle="negative sea level values") +
   coord_sf() # to keep map's proportions
 
+
+str(sea_level_0_df)
 ggplot() + 
   geom_raster(data = sea_level_0_df, aes(x=x, y=y, fill = binned)) + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle="zero sea level") +
