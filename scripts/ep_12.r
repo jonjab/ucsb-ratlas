@@ -136,34 +136,35 @@ ggplot() +
   facet_wrap(~ date)
 
 # View Distribution of Raster Values
+str(ndvi_series_df)
 
-ggplot(NDVI_HARV_stack_df) +
+ggplot(ndvi_series_df) +
   geom_histogram(aes(value)) + 
-  facet_wrap(~variable)
+  facet_wrap(~date)
 
 # Explore Unusual Data Patterns
 # by comparing to weather data
 # which we can get here: 
 # https://files.countyofsb.org/pwd/hydrology/historic%20data/rainfall/XLS%20Dailys/200dailys.xls
 
-har_met_daily <-
-  read.csv("data/NEON-DS-Met-Time-Series/HARV/FisherTower-Met/hf001-06-daily-m.csv")
+# har_met_daily <-
+#  read.csv("data/NEON-DS-Met-Time-Series/HARV/FisherTower-Met/hf001-06-daily-m.csv")
 
-str(har_met_daily)
+# str(har_met_daily)
 
 # change dates from characters to dates
-har_met_daily$date <- as.Date(har_met_daily$date, format = "%Y-%m-%d")
+# har_met_daily$date <- as.Date(har_met_daily$date, format = "%Y-%m-%d")
 
 # plot daily precipation for 2023-2024
-yr_23_24_daily_avg <- har_met_daily %>%
-  filter(between(date, as.Date('2023-01-01'), as.Date('2024-12-31')))
+# yr_23_24_daily_avg <- har_met_daily %>%
+#  filter(between(date, as.Date('2023-01-01'), as.Date('2024-12-31')))
 
-ggplot() +
-  geom_point(data = yr_23_24_daily_avg, aes(jd, airt)) +
-  ggtitle("Daily Mean Air Temperature",
-          subtitle = "NEON Harvard Forest Field Site") +
-  xlab("Julian Day 2023-24") +
-  ylab("Mean Air Temperature (C)")
+#ggplot() +
+#  geom_point(data = yr_23_24_daily_avg, aes(jd, airt)) +
+#  ggtitle("Daily Mean Air Temperature",
+#          subtitle = "NEON Harvard Forest Field Site") +
+#  xlab("Julian Day 2023-24") +
+#  ylab("Mean Air Temperature (C)")
 
 # Challenge: examine RGB raster files
 # What explains our NDVI big changes?
