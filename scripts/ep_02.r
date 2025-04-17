@@ -207,6 +207,9 @@ ggplot() +
 below_3 <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df < 3.12))
 below_0 <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df < 0))
 
+nrow(below_3 = TRUE)
+length(below_0 = TRUE)
+
 # that's the same number. we must have done something wrong. 
 pixel_count <- nrow(campus_DEM_df) 
 pixel_count
