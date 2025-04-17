@@ -221,6 +221,18 @@ summary(campus_DEM_df)
 below_3 <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df < 3.12))
 below_0 <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df < 0))
 
+# Count all pixels below 0
+negatives <- campus_DEM_df %>% filter(elevation < 0)
+nrow(negatives)  # this will give you the count
+
+print(negatives)
+
+# Count how many pixels are below 3.12 feet
+below_3ft <- campus_DEM_df %>% filter(elevation < 3.12)
+nrow(below_3ft)
+
+
+
 # that's the same number. we must have done something wrong. 
 pixel_count <- nrow(campus_DEM_df) 
 pixel_count
