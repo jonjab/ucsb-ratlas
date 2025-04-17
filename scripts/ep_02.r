@@ -207,8 +207,6 @@ ggplot() +
 below_3 <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df < 3.12))
 below_0 <- apply(campus_DEM_df, 1, function(campus_DEM_df) any(campus_DEM_df < 0))
 
-nrow(below_3 = TRUE)
-length(below_0 = TRUE)
 
 # Count all pixels below 0
 negatives <- campus_DEM_df %>% filter(elevation < 0)
@@ -218,30 +216,29 @@ print(negatives)
 
 # Count how many pixels are below 3.12 feet
 below_3ft <- campus_DEM_df %>% filter(elevation < 3.12)
-nrow(below_3ft)
-
-
-
-# that's the same number. we must have done something wrong. 
-pixel_count <- nrow(campus_DEM_df) 
-pixel_count
-length(below_0)
-length(which(below_3))
-
-#
-# negative_only <- filter()
-# we still need to count the negatives.
-
+nrow(below_3ft)  # this will give you the count
 
 
 # look at the values in the DEM
+# I'm convinced < 3 ft should make an ok binned ggplot.
 str(campus_DEM_df)
-unique(campus_DEM_df$elevation)
+# when did elevation become so NA?
+
+
+ggplot() + 
+  geom_raster(data=campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
+  geom_raster(data = campus_hillshade_df, aes(x=x, y=y, alpha = hillshade)) +
+  scale_alpha(range = c(0.05, 0.6), guide="none") +
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  coord_sf()
+
+
 
 # that's too many. let's count them up tidily
 campus_DEM_df %>% 
   group_by(elevation) %>% 
-  count()
+  count() %>% 
+  head(20)
 
 str(campus_DEM_df)
 
