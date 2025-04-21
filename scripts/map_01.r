@@ -351,6 +351,7 @@ final_ggplot <- ggplot() +
 
 # is there anything we don't like about this?
 # do we want subtle off-campus bike paths?
+# or at least a current set that would got across NCOS?
 
 final_ggplot
 ggsave("images/map1.11.png", width = 16, height = 9, plot=final_ggplot)
