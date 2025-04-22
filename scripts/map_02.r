@@ -45,6 +45,8 @@ streams <- vect("source_data/california_streams/California_Streams.shp")
 # Coastline polygon
 coastline <- vect("source_data/pacific_ocean-shapefile/3853-s3_2002_s3_reg_pacific_ocean_lines.shp")
 # IV buildings
+iv_buildings <- sf::st_read("source_data/iv_buildings/iv_buildings/CA_Structures_ExportFeatures.shp")
+iv_buildings <- sf::st_transform(iv_buildings, crs(trees))
 
 # Let's take a quick first look at our data and find out their projections
 plot(trees)
@@ -136,7 +138,8 @@ new_ext <- ext(-xrange + ext_trees$xmin, xrange + ext_trees$xmax,
 bikes_crop <- crop(bikes_proj, new_ext)
 streams_crop <- crop(streams, new_ext)
 coastline_crop <- crop(coastline_proj, new_ext)
-
+iv_crop_poly <- sf::st_as_sf(as.polygons(new_ext))
+iv_buildings <- sf::st_crop(iv_buildings, iv_crop_poly)
 
 # Run again the plot to see the differences
 ggplot() +
@@ -343,6 +346,7 @@ map2_gg5 <- ggplot() +
   geom_spatvector(data=streams_crop, aes(colour = 'Streams'), , linewidth = 2, alpha=0.6) +
   geom_spatvector(data=bikes_lines, aes(colour = 'Bike Paths'), linewidth = 1) +
   geom_spatvector(data=coastline_crop, aes(colour = 'Ocean'), linewidth = 1, fill = 'dodgerblue') +
+  geom_sf(data = iv_buildings, color = alpha("gray60", 0.2), fill = NA) + 
   scale_colour_manual(name = "Legend",
                       values = c('Bike Paths' = 'black',
                                  'Streams' = 'cadetblue3',
@@ -351,7 +355,7 @@ map2_gg5 <- ggplot() +
   labs(subtitle = 'Map 2: Stylized thematic map of UCSB campus',
        title = 'Trees, bikes, and water. (v.5)',
        caption = gg_labelmaker(current_ggplot+1),
-       x = 'Long', y = 'Lat') +
+       x = NULL, y = NULL) +
   theme(
     plot.title = element_text(hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5),
@@ -359,7 +363,7 @@ map2_gg5 <- ggplot() +
     panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5)
   ) +
   scale_x_continuous(expand = c(0, 0)) +
-  scale_y_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), labels = scales::label_number(accuracy = 0.01))
   annotation_scale(location = 'bl', width_hint = 0.167)
 
 map2_gg5
