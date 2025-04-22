@@ -217,7 +217,7 @@ zoom_1_plot <- ggplot() +
         panel.ontop=TRUE,
         panel.background = element_blank()) +
   coord_sf(crs=campus_crs) + 
-  ggtitle("Zoom 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
+  ggtitle("Map 3: zm 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_1_plot
 
@@ -365,7 +365,7 @@ zoom_1_plot <- ggplot() +
         panel.ontop=TRUE,
         panel.background = element_blank()) +
   coord_sf(crs=campus_crs) + 
-  ggtitle("Zoom 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
+  ggtitle("Map 3: zm 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_1_plot
 
