@@ -34,14 +34,17 @@ gg_labelmaker <- function(plot_num){
 # end automagic ggtitle           #######
 
 
-# remake our objects
+# remake our objects and load the data
 buildings <- st_read("source_data/campus_buildings/Campus_Buildings.shp")
 birds <- st_read("source_data/NCOS_Bird_Survey_Data_20190724shp/NCOS_Bird_Survey_Data_20190724_web.shp")
 bikes <- st_read("source_data/icm_bikes/bike_paths/bikelanescollapsedv8.shp")
 
 # maybe use the zoomed in streams instead / also?
+# what zoomed in stream? - KL
 
-# this might be the first use of $geometry
+###### Query Vector Feature Metadata
+
+# this might be the first use of $st_geometry
 # canonical lesson uses a single point. we will use birds
 plot(birds$geometry)
 
@@ -50,11 +53,9 @@ birds
 ncol(birds)
 names(birds)
 
+# view the individual names and each attribute
 ncol(bikes)
 names(bikes)
-
-
-# Challenge: Plot Polygon by Attribute
 
 # bikes by LnType
 unique(bikes$LnType)
@@ -62,6 +63,7 @@ str(bikes$LnType)
 
 # Challenge: Attributes for Different Spatial Classes
 # points vs an aoi
+# what data is going to be used for this challenge? 
 
 
 # Explore Values within One Attribute
@@ -72,12 +74,15 @@ str(bikes$LnType)
 st_geometry_type(buildings)
 colnames(buildings)
 
+# I guess contents of department will spit out answer more similar to canonical?
+unique(buildings$department)
 
 
 # 2 different ages in the table.
 # one is a string. one is a number.
 unique(buildings$date_bldg)
 unique(buildings$bld_date)
+
 
 # but how do we get at those attributes?
 # plot(buildings, max.plot = 20)
@@ -97,17 +102,19 @@ ggplot() +
   scale_fill_continuous() +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Campus Buildings")
 
+#^scale fill continuous? hard to tell different years...
 
 
 # Subset Features
 # canonical does it by path type
+#   we could subset by department since that is a feature
 # maybe we do it by age of building?
     # ducks only in birds?
 
 # B: and then plot one-by-one layer
 
 # C: with an aes()
-# this one gives a gradient
+# this one gives a gradient (but its not great)
 ggplot() +
   geom_sf(data = buildings, aes(color = bld_date), size = 1.5) +
   ggtitle("Campus Buildings", subtitle = "by age") +
@@ -125,7 +132,7 @@ str(bikes)
 
 ggplot() +
   geom_sf(data = bikes, aes(size = 1.5)) +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Campus Buildings, by age") +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle="Campus Bike Lanes") +
   coord_sf()
 
 
