@@ -385,5 +385,4 @@ ggsave(
   units = 'in'
 )
 
-# add IV buildings as in map 1
 # add a background?
