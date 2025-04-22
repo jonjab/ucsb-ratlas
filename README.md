@@ -21,10 +21,10 @@ track of object names and files.
 1: Clone this repo. 
 
 2: Run `scripts/data_prep_new.r` This script downloads a folder from
-our Carentry Google drive into a `downloaded_data` directory), and unzips
+our Carpentry Google drive into a `downloaded_data` directory), and unzips
 it into `source_data`
 
-3: Now you can run `run_ever_map.r` and `run_every_episode.r` (in that order) 
+3: Now you can run `run_every_map.r` and `run_every_episode.r` (in that order) 
 to produce output from these data sources. Any data that an episode writes is
 placed in `output_data` and any formatted maps are placed in `images`. Both
 are .gitignored. `final_output` has .png files used in the readme.
