@@ -57,16 +57,27 @@ buildings <- st_transform(buildings, campus_projection)
 bikeways <- st_transform(bikeways, campus_projection)
 habitat <- st_transform(habitat, campus_projection)
 
+# Turn bike paths into a SpatVector so we can get its extent
+bikeways_vect <- vect(bikeways)
+
+# Get extent of the bike paths
+bike_extent <- ext(bikeways_vect)
+
+# Crop rasters to bike extent
+campus_DEM_crop <- crop(campus_DEM, bike_extent)
+campus_bath_crop <- crop(campus_bath, bike_extent)
+campus_hillshade_crop <- crop(campus_hillshade, bike_extent)
+
 crs(buildings)
 
 # make dataframes
-campus_DEM_df <- as.data.frame(campus_DEM, xy=TRUE) %>%
-  rename(elevation = greatercampusDEM_1_1) # rename to match code later
+campus_DEM_df <- as.data.frame(campus_DEM_crop, xy=TRUE) %>%
+  rename(elevation = greatercampusDEM_1_1)
 
-campus_bath_df <- as.data.frame(campus_bath, xy=TRUE) %>%
+campus_bath_df <- as.data.frame(campus_bath_crop, xy=TRUE) %>%
   rename(bathymetry = Bathymetry_2m_OffshoreCoalOilPoint)
 
-campus_hillshade_df <- as.data.frame(campus_hillshade, xy=TRUE)
+campus_hillshade_df <- as.data.frame(campus_hillshade_crop, xy=TRUE)
 
 # to make our scales make sense, we do 
 # raster math 
@@ -109,4 +120,3 @@ ggplot() +
 
 ggsave("images/map6.0.png", width = 12, height = 4, plot=last_plot())
 object_test_abb <- ls()
-
