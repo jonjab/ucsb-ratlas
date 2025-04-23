@@ -173,7 +173,7 @@ ggplot() +
   geom_sf(data=greatercampus, color = "red", size = 2) +
   geom_sf(data=maincampus, color = "orange") +
   geom_sf(data=westcampus, color = "blue") +
-  geom_sf(data=bikes_icm, color = "blue", size = 1.5) +
+  geom_sf(data=bikes_icm, color = "yellow", size = 1.5) +
   geom_sf(data=bikes_library, color = "red", size = .75) +
   geom_sf(data=buildings, color = "gray") +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
@@ -187,7 +187,7 @@ ggplot() +
   geom_sf(data=greatercampus, color = "red", size = 2) +
   geom_sf(data=maincampus, color = "orange") +
   geom_sf(data=westcampus, color = "blue") +
-  geom_sf(data=bikes_icm, color = "blue", size = 2) +
+  geom_sf(data=bikes_icm, color = "yellow", size = 2) +
   geom_sf(data=bikes_library, color = "red", size = .75) +
   geom_sf(data=buildings, color = "gray") +
   geom_sf(data=birds_points, color = "purple") +

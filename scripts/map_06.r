@@ -4,11 +4,10 @@
 
 
 library(terra)
-library(tidyverse)
+library(ggplot2)
+library(dplyr)
 library(raster)
-library(terra)
 library(sf)
-# library(rgdal)
 
 # clean the environment and hidden objects
 rm(list=ls())
@@ -18,6 +17,7 @@ current_sheet <- 6
 # set ggplot counter
 current_ggplot <- 0
 
+# make our ggtitles automagically #######
 gg_labelmaker <- function(plot_num){
   gg_title <- c("Map:", current_sheet, " ggplot:", plot_num)
   plot_text <- paste(gg_title, collapse=" " )
@@ -25,7 +25,6 @@ gg_labelmaker <- function(plot_num){
   current_ggplot <<- plot_num
   return(plot_text)
 }
-
 # every ggtitle should be:
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle           #######
@@ -38,19 +37,43 @@ iv_buildings <- st_read("source_data/iv_buildings/iv_buildings/CA_Structures_Exp
 
 # rasters
 # the background setup is bathymetry and topography mashed together
+# this is worked through in map_01.r
+# but we need to crop them tighter
 
 campus_DEM <- rast("source_data/campus_DEM.tif") 
-campus_bath <- rast("output_data/ep_3_campus_bathymetry_crop.tif")
+campus_bath <- rast("source_data/SB_bath.tif")
 campus_hillshade <- rast("source_data/campus_hillshade.tif")
+# and/or user bathotopo from map 1:
+campus_bathotopo <- rast("output_data/campus_bathotopo.tif")
+
+# ###################
+# crop the 4 rasters to the extent of the bike paths:
+
+
+
+
+
+# then set up dataframes for each:
+campus_DEM_6_df <- as.data.frame(campus_DEM, xy=TRUE) %>%
+  rename(elevation = greatercampusDEM_1_1) # rename to match code later
+
+campus_bath_6_df <- as.data.frame(campus_bath, xy=TRUE) %>%
+  rename(bathymetry = Bathymetry_2m_OffshoreCoalOilPoint)
+
+campus_hillshade_6_df <- as.data.frame(campus_hillshade, xy=TRUE)
+
+# and bathotopo too:
 
 # We'll need some bins
 # best coast line bins from ep 2
-# based on experimentation:
+# were created by trial-and-error:
 custom_bins <- c(-3, 4.9, 5, 7.5, 10, 25, 40, 70, 100, 150, 200)
 
 # we will use the original projection of
 #    campus_DEM
+# for whatever needs it to overlay:
 campus_projection <- crs(campus_DEM)
+<<<<<<< HEAD
 campus_bath <- project(campus_bath, campus_projection)
 campus_hillshade <- project(campus_hillshade, campus_projection)
 buildings <- st_transform(buildings, campus_projection)
@@ -88,6 +111,8 @@ sea_level <- campus_DEM - 5
 sea_level_0 <- app(sea_level, function(x) ifelse(x <=0, NA, x))
 # Note: this remove some values in the marsh that are below 0
 # we are going to want those back later as our 'vernal pools'
+=======
+>>>>>>> 99a2fae97b8bb4ec583eef8d1bf76d49cfbd5195
 
 
 # test vector overlays
@@ -96,27 +121,32 @@ ggplot() +
   geom_sf(data=buildings) +
   geom_sf(data=iv_buildings) +
   geom_sf(data=bikeways) +
-  ggtitle(gg_labelmaker(current_ggplot+1))
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
-
 
 
 
 ############################
-str(campus_hillshade_df)
+# now do what's necessary to plot the new
+# closest-in #6 rasters together with the 4 vector layers
 
-# this is mostly map 1 so far
-
+# these '6' versions should map when they are ready:
 ggplot() +
-  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
+  geom_raster(data = campus_DEM_6_df, aes(x=x, y=y, fill = elevation)) +
   geom_sf(data=buildings, color ="hotpink") +
   geom_sf(data=bikeways, color="yellow") +
-  geom_raster(data = campus_hillshade_df, aes(x=x, y=y, alpha = hillshade), show.legend = FALSE) +
+  geom_raster(data = campus_hillshade_6_df, aes(x=x, y=y, alpha = hillshade), show.legend = FALSE) +
   geom_sf(data=habitat, color="darkorchid1") +
-  geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
+  geom_raster(data = campus_bath_6_df, aes(x=x, y=y, fill = bathymetry)) +
   scale_fill_viridis_c(na.value="NA") +
   ggtitle("Map 6 = Map 1", subtitle = (gg_labelmaker(current_ggplot+1))) +
   coord_sf()
 
+
+# do we need to go back and crop the 
+# larger extent vectors to make this work?
+  
+  
+  
 ggsave("images/map6.0.png", width = 12, height = 4, plot=last_plot())
 object_test_abb <- ls()
