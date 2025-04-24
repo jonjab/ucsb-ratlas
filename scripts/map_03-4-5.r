@@ -346,6 +346,11 @@ zoom_3_plot
 
 
 # ################################
+# for thinner graticules
+thin_grat <- theme(
+  panel.grid.major = element_line(colour = "white", linewidth = 0.05),  # was 0.5
+  panel.grid.minor = element_line(colour = "white", linewidth = 0.05)
+)
 # now let's add 
 # 'california populated places'
 # which is census data
@@ -364,7 +369,8 @@ zoom_1_plot <- ggplot() +
         legend.position="none", 
         panel.ontop=TRUE,
         panel.background = element_blank()) +
-  coord_sf(crs=campus_crs) + 
+  coord_sf(crs=campus_crs) +
+  thin_grat +
   ggtitle("Map 3: zm 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_1_plot
@@ -382,7 +388,8 @@ zoom_2_plot <- ggplot() +
   geom_spatvector(data=places, fill="gray") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
-  coord_sf() + 
+  coord_sf() +
+  thin_grat +
   ggtitle("Map 4: zm 2: Zoom test", subtitle=gg_labelmaker(current_ggplot+1))
 
 zoom_2_plot
@@ -418,6 +425,7 @@ zoom_2_plot <- ggplot() +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf() + 
+  thin_grat +
   ggtitle("Map 4: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
 
 # this plots, but at the full extent of california.
@@ -440,6 +448,7 @@ zoom_2_plot <- ggplot() +
         panel.ontop=TRUE,
         panel.background = element_blank()) +
   coord_sf() + 
+  thin_grat +
   ggtitle("Map 4: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_2_plot
@@ -448,6 +457,8 @@ zoom_2_plot
 # #######################################################
 # back to start of zoom 
 # do these all look the same yet?
+
+
 
 # zoom 1 needs a DEM
 zoom_1_plot
