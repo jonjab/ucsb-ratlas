@@ -390,7 +390,7 @@ str(avg_NDVI_df)
 
 ggplot(avg_NDVI_df, mapping = aes(Month, MeanNDVI)) +
   geom_point() +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "can't rean this axis")
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "can't read this axis")
 
 
 # we'll need weather data to mimic the lesson.
