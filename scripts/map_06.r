@@ -73,7 +73,6 @@ custom_bins <- c(-3, 4.9, 5, 7.5, 10, 25, 40, 70, 100, 150, 200)
 #    campus_DEM
 # for whatever needs it to overlay:
 campus_projection <- crs(campus_DEM)
-<<<<<<< HEAD
 campus_bath <- project(campus_bath, campus_projection)
 campus_hillshade <- project(campus_hillshade, campus_projection)
 buildings <- st_transform(buildings, campus_projection)
@@ -111,8 +110,7 @@ sea_level <- campus_DEM - 5
 sea_level_0 <- app(sea_level, function(x) ifelse(x <=0, NA, x))
 # Note: this remove some values in the marsh that are below 0
 # we are going to want those back later as our 'vernal pools'
-=======
->>>>>>> 99a2fae97b8bb4ec583eef8d1bf76d49cfbd5195
+
 
 
 # test vector overlays
