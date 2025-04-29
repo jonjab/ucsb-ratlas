@@ -23,7 +23,8 @@ gg_labelmaker <- function(plot_num){
 # end automagic ggtitle           #######
 
 # ---------- 1. read layers ----------
-bike_paths <- vect("") # replace with updated bike-path file
+# bike_paths <- vect("") # replace with updated bike-path file
+bike_paths <- vect("source_data/icm_bikes/bike_paths/bikelanescollapsedv8.shp")
 creeks     <- vect("source_data/california_streams/California_Streams.shp")
 
 # ---------- 2. common CRS ----------
