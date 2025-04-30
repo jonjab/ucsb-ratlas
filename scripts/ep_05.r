@@ -50,6 +50,18 @@ ggplot() +
 
 # Import A Specific Band
 
+# Import only the green band (using band 2)
+green_band <- rast("source_data/cirgis_1ft/w_campus_1ft.tif", lyrs = 2)
+green_band_4ft <- aggregate(green_band, fact = 4)
+
+# Convert to data frame for plotting
+green_df <- as.data.frame(green_band_4ft, xy = TRUE)
+
+# Plot green band 
+ggplot() +
+  geom_raster(data = green_df, aes(x = x, y = y, alpha = w_campus_1ft_2)) +
+  coord_quickmap() +
+  ggtitle(gg_labelmaker(current_ggplot + 1))
 
 
 
@@ -71,6 +83,18 @@ west_campus_4ft[[2]]
 
 west_campus_df <- as.data.frame(west_campus_4ft, xy = TRUE)
 str(west_campus_df)
+
+# Histogram of band 1
+ggplot(west_campus_df, aes(x = w_campus_1ft_1)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white") + 
+  ggtitle(gg_labelmaker(current_ggplot + 1))
+
+# Raster plot of band 1
+ggplot() +
+  geom_raster(data = west_campus_df, aes(x = x, y = y, fill = w_campus_1ft_1)) +
+  scale_fill_viridis_c() +
+  coord_quickmap() +
+  ggtitle(gg_labelmaker(current_ggplot + 1))
 
 
 # Create A Three Band Image
