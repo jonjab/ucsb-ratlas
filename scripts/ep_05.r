@@ -52,6 +52,8 @@ ggplot() +
 
 # Import only the green band (using band 2)
 green_band <- rast("source_data/cirgis_1ft/w_campus_1ft.tif", lyrs = 2)
+# it's real big and slow. do let's downsample
+# as in episode 12
 green_band_4ft <- aggregate(green_band, fact = 4)
 
 # Convert to data frame for plotting
@@ -68,11 +70,10 @@ ggplot() +
 # Raster Stacks in R
 ######################
 
-# if you don't speficy, you get all the bands
+# if you don't specify, you get all the bands
 
 west_campus_1ft <- rast("source_data/cirgis_1ft/w_campus_1ft.tif")
-# it draws realslow. do let's downsample
-# as in episode 12
+# again, downsample to speed up plots:
 west_campus_4ft <- aggregate(west_campus_1ft, fact = 4)
 
 # this shows there are 5 bands
@@ -128,10 +129,6 @@ plotRGB(west_campus_4ft,
         g = 2, 
         b = 1)
 
-
-
-
-# plotRGB(NCOS, r=1, g=2, b=3)
 
 
 
