@@ -29,7 +29,7 @@ par(mfrow = c(1,1))
 grays <- colorRampPalette(c("black", "white"))(255)
 
 # set map number
-current_sheet <- 4
+current_sheet <- 3
 # set ggplot counter
 current_ggplot <- 0
 
@@ -57,23 +57,145 @@ str(campus_crs)
 # #####################
 # Map 3
 # Zoom 1: west US overview
-# this one arrived as a hillshade.
-# we will also need a DEM to match
+
+# hillshade:
 world <- rast("source_data/global_raster/GRAY_HR_SR_OB.tif")
 plot(world)
 
-# clip first
+# dem:
+zoom_1_dem <- rast("source_data/dem90_hf/dem90_hf.tif")
+plot(zoom_1_dem)
+# this is a bit too big later on. let's downsample it:
+zoom_1_dem <- aggregate(zoom_1_dem, fact=5)
+
+# clip the hillshade
 # using an AOI we defined in Planet
 zoom_1_extent <- geojson_sf("source_data/cali_overview.geojson")
 zoom_1_extent <- vect(zoom_1_extent)
 zoom_1_extent <- project(zoom_1_extent, crs(world))
 
-# we crop before re-projecting
+# crop before re-projecting
 # because that speeds things up
 # AND gives us an interesting shape
-zoom_1 <- crop(x=world, y=zoom_1_extent)
+zoom_1_hillshade <- crop(x=world, y=zoom_1_extent)
+plot(zoom_1_hillshade)
 
-plot(zoom_1)
+# clip the dem
+zoom_1_extent <- project(zoom_1_extent, crs(zoom_1_dem))
+zoom_1_dem <- crop(x=zoom_1_dem, y=zoom_1_extent)
+plot(zoom_1_dem)
+
+
+# we'll need this
+# socal_aoi.geojson is the next crop extent.
+# it came from a Planet harvest that we did
+zoom_2_crop_extent <- geojson_sf("source_data/socal_aoi.geojson")
+zoom_2_crop_extent <- vect(zoom_2_crop_extent)
+
+# now we do it with ggplot
+# and alphas
+#################################################
+# first check that projections match
+crs(zoom_1_dem) == crs(zoom_1_hillshade)
+zoom_1_dem <- project(zoom_1_dem, crs(zoom_1_hillshade))
+crs(zoom_1_dem) == crs(zoom_1_hillshade)
+
+crs(zoom_1_dem) == crs(zoom_2_crop_extent)
+zoom_2_crop_extent <- project(zoom_2_crop_extent, crs(zoom_1_dem))
+crs(zoom_1_dem) == crs(zoom_2_crop_extent)
+
+# now all 3 layers are in the same CRS
+
+# zoom 1 hillshade as ggplot
+str(zoom_1_hillshade)
+zoom_1_hillshade_df <- as.data.frame(zoom_1_hillshade, xy=TRUE)
+colnames(zoom_1_hillshade_df)
+
+zoom_1_hillshade_plot <- ggplot() +
+  geom_raster(data = zoom_1_hillshade_df,
+              aes(x=x, y=y, fill=GRAY_HR_SR_OB)) +
+  scale_fill_continuous() +
+  theme_dark() +
+  coord_sf() + 
+  ggtitle("Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
+
+zoom_1_hillshade_plot
+
+# zoom 1 DEM as ggplot
+str(zoom_1_dem)
+zoom_1_dem_df <- as.data.frame(zoom_1_dem, xy=TRUE)
+colnames(zoom_1_dem_df)
+
+zoom_1_dem_plot <- ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_continuous() +
+  theme_dark() +
+  coord_sf() + 
+  ggtitle("Western US DEM", subtitle = gg_labelmaker(current_ggplot+1))
+
+zoom_1_dem_plot
+
+# now overlay them
+
+zoom_1_overlay_plot <- ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_continuous() +
+  geom_raster(data = zoom_1_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
+  theme_dark() +
+  coord_sf() + 
+  ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
+
+zoom_1_overlay_plot
+
+
+
+zoom_1_plot <- ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 2, fill=NA) +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
+  coord_sf(crs=campus_crs) + 
+  ggtitle("Map 3: zm 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
+
+zoom_1_plot
+
+# bring in the hillshade with alpha
+zoom_1_plot <- ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  geom_raster(data = zoom_1_hillshade_df,
+              aes(x=x, y=y, alpha=hillshade)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 2, fill=NA) +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.background = element_blank()) +
+  coord_sf(crs=campus_crs) + 
+  ggtitle("Map 3: zm 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
+
+
+
+
+
+# we may not keep the blue color scheme
+
+
+
+
+
+
+
 
 
 
@@ -82,15 +204,12 @@ plot(zoom_1)
 # Zoom 2: Bite of California
 # 
 
-# Crop western region hillshade to our local region defined by 
+# Crop western region DEM to zoom 2 AOI
 # socal_aoi.geojson
 zoom_2 <- rast("source_data/dem90_hf/dem90_hf.tif")
 plot(zoom_2)
 
-# socal_aoi.geojson is the extent we want to crop to
-# it came from a Planet harvest that we did
-zoom_2_crop_extent <- geojson_sf("source_data/socal_aoi.geojson")
-zoom_2_crop_extent <- vect(zoom_2_crop_extent)
+
 
 crs(zoom_2_crop_extent) == crs(zoom_2)
 
@@ -137,7 +256,7 @@ plot(zoom_2_cropped)
 polys(zoom_3_extent, border="red", lwd=2)
 
 
-# we now turn zoom 2 into a hillshade of the area to match:
+# we now turn zoom 2 DEM into a hillshade of the area to match:
 # hillshades are made of slopes and aspects
 zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
 plot(zoom_2_slope)
@@ -149,6 +268,9 @@ zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
                           normalize = TRUE)
 
 plot(zoom_2_hillshade, col = grays)
+polys(zoom_3_extent, border="red", lwd=4)
+
+plot(zoom_2_cropped, col = grays)
 polys(zoom_3_extent, border="red", lwd=4)
 
 # later on we will overlay in ggplot
@@ -167,16 +289,33 @@ plot(zoom_3_hillshade, col = grays)
 
 # ##########################
 # do all the AOI polygons work with 
-# the hillshades?
+# all the hillshades and DEMs?
 # make sure everything is in campus_CRS
+# maybe I don't want to do this. 
 
-# zoom 1: needs projecting
-zoom_1 <- project(zoom_1, campus_crs)
-campus_crs
-crs(zoom_2_crop_extent)
-zoom_2_crop_extent <- project(zoom_2_crop_extent, campus_crs)
+# zoom 1:
+crs(zoom_1_dem) == campus_crs
+# zoom_1_dem <- project(zoom_1_dem, campus_crs)
 
-plot(zoom_1, col = grays)
+crs(zoom_1_hillshade) == campus_crs
+# zoom_1_dem <- project(zoom_1_dem, campus_crs)
+
+# zoom 2:
+crs(zoom_2) == campus_crs
+# renaming this here also for convenience
+# zoom_2_dem <- project(zoom_2, campus_crs)
+
+crs(zoom_2_hillshade) == campus_crs
+# renaming this here also for convenience
+# zoom_2_dem <- project(zoom_2, campus_crs)
+
+# zoom 3:
+crs(campus_DEM) == campus_crs
+crs(zoom_3_hillshade) == campus_crs
+
+
+# test the plots with locators
+plot(zoom_1_dem, col = grays)
 polys(zoom_2_crop_extent, border="red",lwd=5)
 
 # zoom 2: works
@@ -187,41 +326,7 @@ polys(zoom_3_extent, border="red", lwd=5)
 # doesn't have a locator
 
 
-# now we do it all again with ggplot
-# and alphas
-#################################################
 
-# zoom 1 hillshade as ggplot
-str(zoom_1)
-zoom_1_df <- as.data.frame(zoom_1, xy=TRUE)
-colnames(zoom_1_df)
-
-zoom_1_plot <- ggplot() +
-  geom_raster(data = zoom_1_df,
-              aes(x=x, y=y, fill=GRAY_HR_SR_OB)) +
-  scale_fill_continuous() +
-  theme_dark() +
-  coord_sf(crs=campus_crs) + 
-  ggtitle("Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_1_plot
-
-# overlay the AOI
-zoom_1_plot <- ggplot() +
-  geom_raster(data = zoom_1_df,
-              aes(x=x, y=y, fill=GRAY_HR_SR_OB)) +
-  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 2, fill=NA) +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
-  coord_sf(crs=campus_crs) + 
-  ggtitle("Map 3: zm 1: Western US Hillshade", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_1_plot
-
-# we may not keep the blue color scheme
 
 
 #################################################
@@ -360,7 +465,7 @@ plot(places)
 # overlay this on top of zoom 1 and zoom 2
 
 zoom_1_plot <- ggplot() +
-  geom_raster(data = zoom_1_df,
+  geom_raster(data = zoom_1_hillshade_df,
               aes(x=x, y=y, fill=GRAY_HR_SR_OB)) +
   geom_spatvector(data=places, fill="gray") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", fill=NA) +
