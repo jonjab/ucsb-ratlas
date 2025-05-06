@@ -24,13 +24,12 @@ gg_labelmaker <- function(plot_num){
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle 
 
-#gray like map 3
+# gray like map 3
 grays <- colorRampPalette(c("black", "white"))(255)
 
 # ############################
 # Map 4
 # Zoom 2: Bite of California
-# 
 
 #use campus CRS
 campus_DEM <- rast("source_data/campus_DEM.tif") 
@@ -84,6 +83,22 @@ zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
 zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
 str(zoom_2_hillshade_df)
 
+# test and reproject as necessary
+zoom_3_extent <-ext(campus_DEM)
+crs(zoom_3_extent) == campus_crs
+crs(zoom_2_cropped) == campus_crs
+crs(zoom_2_hillshade) == campus_crs
+
+zoom_2_cropped <- project(zoom_2_cropped, campus_crs)
+zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
+
+
+# 'california populated places'
+# which is census data
+# for the sake of a nice vizualization
+places <- vect("source_data/tl_2023_06_place/tl_2023_06_place.shp")
+plot(places)
+places <- project(places, campus_crs)
 
 # For zoom 2, places does not overlay nicely.
 # this is another CRS error
@@ -103,18 +118,11 @@ zoom_2_plot <- ggplot() +
 
 zoom_2_plot
 
-# test and reproject as necessary
-zoom_3_extent <-ext(campus_DEM)
-crs(zoom_3_extent) == campus_crs
-crs(zoom_2_cropped) == campus_crs
-crs(zoom_2_hillshade) == campus_crs
 
 # move layer lower, add overlays first?
 # crs(places) == campus_crs
 
-zoom_2_cropped <- project(zoom_2_cropped, campus_crs)
-zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
-places <- project(places, campus_crs)
+
 crs(zoom_2_cropped) == campus_crs
 crs(zoom_2_hillshade) == campus_crs
 crs(places) == campus_crs
