@@ -90,7 +90,7 @@ Bacara-ish to 154/101
 #### Map 6 Campus Detail
 Wide Landscape 9x16ish? \* A stripped down version of map #1,
 sympolized to match the look of 3-4-5
-
+![Map 6 until now](readme_images/map6.1.png "Map 6 until now")
 
 #### Map 3 sketch: 
 we used to have a jpg of the whiteboard here.
