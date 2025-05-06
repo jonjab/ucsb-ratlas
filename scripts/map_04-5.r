@@ -99,6 +99,7 @@ zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
 # for the sake of a nice vizualization
 places <- vect("source_data/tl_2023_06_place/tl_2023_06_place.shp")
 plot(places)
+crs(places) == campus_crs
 places <- project(places, campus_crs)
 
 #places still not showing up
