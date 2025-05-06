@@ -24,6 +24,86 @@ gg_labelmaker <- function(plot_num){
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle 
 
+# gray like map 3
+grays <- colorRampPalette(c("black", "white"))(255)
+
+# ############################
+# Map 4
+# Zoom 2: Bite of California
+
+#use campus CRS
+campus_DEM <- rast("source_data/campus_DEM.tif") 
+crs(campus_DEM)
+campus_crs <-crs(campus_DEM)
+
+
+# Crop western region DEM to zoom 2 AOI
+# socal_aoi.geojson
+zoom_2 <- rast("source_data/dem90_hf/dem90_hf.tif")
+plot(zoom_2)
+
+# we'll need this
+# socal_aoi.geojson is the next crop extent.
+# it came from a Planet harvest that we did
+zoom_2_crop_extent <- geojson_sf("source_data/socal_aoi.geojson")
+zoom_2_crop_extent <- vect(zoom_2_crop_extent)
+
+crs(zoom_2_crop_extent) == crs(zoom_2)
+
+# project it to match west_us
+# this will also 'rotate' southern california
+# when we crop it, making it 
+# visually more readable
+zoom_2_crop_extent <- project(zoom_2_crop_extent, crs(zoom_2))
+crs(zoom_2_crop_extent) == crs(zoom_2)
+
+# to confirm that's the correct extent
+# that you want to crop to
+plot(zoom_2)
+polys(zoom_2_crop_extent)
+
+# now crop to that extent
+zoom_2_cropped <- crop(x=zoom_2, y=zoom_2_crop_extent)
+plot(zoom_2_cropped)
+
+# we now turn zoom 2 DEM into a hillshade of the area to match:
+# hillshades are made of slopes and aspects
+zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
+plot(zoom_2_slope)
+
+zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
+plot(zoom_2_aspect)
+zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
+                          angle = 15,
+                          direction = 270,
+                          normalize = TRUE)
+
+
+# remake dataframes
+zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
+zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
+str(zoom_2_hillshade_df)
+
+# test and reproject as necessary
+zoom_3_extent <-ext(campus_DEM)
+crs(zoom_3_extent) == campus_crs
+crs(zoom_2_cropped) == campus_crs
+crs(zoom_2_hillshade) == campus_crs
+
+zoom_2_cropped <- project(zoom_2_cropped, campus_crs)
+zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
+
+
+# 'california populated places'
+# which is census data
+# for the sake of a nice vizualization
+places <- vect("source_data/tl_2023_06_place/tl_2023_06_place.shp")
+plot(places)
+crs(places) == campus_crs
+places <- project(places, campus_crs)
+
+#places still not showing up
+---------------------------------------
 
 # For zoom 2, places does not overlay nicely.
 # this is another CRS error
@@ -43,23 +123,14 @@ zoom_2_plot <- ggplot() +
 
 zoom_2_plot
 
-# test and reproject as necessary
-crs(zoom_3_extent) == campus_crs
+
+# move layer lower, add overlays first?
+# crs(places) == campus_crs
+
+
 crs(zoom_2_cropped) == campus_crs
 crs(zoom_2_hillshade) == campus_crs
 crs(places) == campus_crs
-
-zoom_2_cropped <- project(zoom_2_cropped, campus_crs)
-zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
-places <- project(places, campus_crs)
-crs(zoom_2_cropped) == campus_crs
-crs(zoom_2_hillshade) == campus_crs
-crs(places) == campus_crs
-
-# remake dataframes
-zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
-zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
-str(zoom_2_hillshade_df)
 
 # try again:
 # nope, you are gonna need to crop places
@@ -107,36 +178,11 @@ zoom_2_plot
 
 
 
-# ############################
-# Map 4
-# Zoom 2: Bite of California
-# 
-
-# Crop western region DEM to zoom 2 AOI
-# socal_aoi.geojson
-zoom_2 <- rast("source_data/dem90_hf/dem90_hf.tif")
-plot(zoom_2)
 
 
 
-crs(zoom_2_crop_extent) == crs(zoom_2)
 
-# project it to match west_us
-# this will also 'rotate' southern california
-# when we crop it, making it 
-# visually more readable
-zoom_2_crop_extent <- project(zoom_2_crop_extent, crs(zoom_2))
-crs(zoom_2_crop_extent) == crs(zoom_2)
 
-# now you can plot them together
-# to confirm that's the correct extent
-# that you want to crop to
-plot(zoom_2)
-polys(zoom_2_crop_extent)
-
-# now crop to that extent
-zoom_2_cropped <- crop(x=zoom_2, y=zoom_2_crop_extent)
-plot(zoom_2_cropped)
 
 # now we want to use the extent of the campus_DEM
 # for our next zoom indicator
@@ -164,16 +210,6 @@ plot(zoom_2_cropped)
 polys(zoom_3_extent, border="red", lwd=2)
 
 
-# we now turn zoom 2 DEM into a hillshade of the area to match:
-# hillshades are made of slopes and aspects
-zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
-plot(zoom_2_slope)
-zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
-plot(zoom_2_aspect)
-zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
-                          angle = 15,
-                          direction = 270,
-                          normalize = TRUE)
 
 plot(zoom_2_hillshade, col = grays)
 polys(zoom_3_extent, border="red", lwd=4)
