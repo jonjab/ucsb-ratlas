@@ -70,6 +70,7 @@ plot(zoom_2_cropped)
 # hillshades are made of slopes and aspects
 zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
 plot(zoom_2_slope)
+
 zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
 plot(zoom_2_aspect)
 zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
@@ -99,6 +100,9 @@ zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
 places <- vect("source_data/tl_2023_06_place/tl_2023_06_place.shp")
 plot(places)
 places <- project(places, campus_crs)
+
+#places still not showing up
+---------------------------------------
 
 # For zoom 2, places does not overlay nicely.
 # this is another CRS error
@@ -177,10 +181,6 @@ zoom_2_plot
 
 
 
-
-
-
-# now you can plot them together
 
 
 # now we want to use the extent of the campus_DEM
