@@ -74,13 +74,12 @@ zoom_1_extent_vect
 zoom_1_extent
 
 
-# clip the world to zoom_1
+# clip the world hillshade to zoom_1
 zoom_1_hillshade <- crop(x=world, y=zoom_1_extent)
 plot(zoom_1_hillshade)
 
 crs(zoom_1_hillshade)
 zoom_1_extent_vect <- project(x=zoom_1_extent_vect, y=zoom_1_hillshade)
-
 
 # clip the dem
 crs(zoom_1_dem) == crs(zoom_1_hillshade)
@@ -105,11 +104,12 @@ zoom_2_crop_extent <- vect(zoom_2_crop_extent)
 #################################################
 
 # first check that projections match
+crs(zoom_1_hillshade) == crs(zoom_1_dem)
 crs(zoom_1_dem) == crs(zoom_2_crop_extent)
 crs(zoom_1_hillshade) == crs(zoom_2_crop_extent)
-# they don't. but we still seem to be able to overlay.
+# the rasters don't match the vector. 
+# but we still seem to be able to overlay.
 
-crs(zoom_1_hillshade) == crs(zoom_1_dem)
 
 # hillshade as ggplot
 str(zoom_1_hillshade)
@@ -163,9 +163,10 @@ zoom_1_overlay_plot <- ggplot() +
   coord_sf() + 
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
 
-# the hillshade for the water is very sublte.
+# the hillshade for the water is very subtle.
 zoom_1_overlay_plot
 
+# add the graticule
 zoom_1_overlay_plot <- ggplot() +
   geom_raster(data = zoom_1_dem_df,
               aes(x=x, y=y, fill=dem90_hf)) +
@@ -182,6 +183,7 @@ zoom_1_overlay_plot <- ggplot() +
   coord_sf() + 
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
 
+zoom_1_overlay_plot
 
 # now seize control of labels
 zoom_1_overlay_plot <- ggplot() +
@@ -211,8 +213,6 @@ zoom_1_overlay_plot
 places <- vect("source_data/tl_2023_06_place/tl_2023_06_place.shp")
 plot(places)
 
-# overlay this on top of zoom 1 and zoom 2
-
 zoom_1_overlay_places <- ggplot() +
   geom_raster(data = zoom_1_dem_df,
               aes(x=x, y=y, fill=dem90_hf)) +
@@ -228,9 +228,27 @@ zoom_1_overlay_places <- ggplot() +
         panel.ontop=TRUE,
         panel.background = element_blank()) +
   coord_sf() + 
-  ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
+  ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_1_overlay_places
+
+ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_1_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.3), guide="none") +
+  geom_spatvector(data=places, fill="NA") +
+  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+          panel.background = element_blank()) +
+  coord_sf() + 
+  ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
 
 
 
@@ -239,5 +257,5 @@ zoom_1_overlay_places
 #######################################################################################
 
 
-ggsave("images/map3.png", width = 3, height = 4, plot=zoom_1_plot)
+ggsave("images/map3.png", width = 3, height = 4, plot=zoom_1_overlay_places)
 
