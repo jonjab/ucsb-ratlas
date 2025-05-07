@@ -3,9 +3,11 @@
 
 rm(list=ls())
 
+library(sf)
 library(terra)
 library(geojsonsf)
 library(ggplot2)
+library(dplyr)
 
 # set map number
 current_sheet <- 4
@@ -24,27 +26,28 @@ gg_labelmaker <- function(plot_num){
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle 
 
-# gray like map 3
-grays <- colorRampPalette(c("black", "white"))(255)
 
 # ############################
 # Map 4
 # Zoom 2: Bite of California
 
-#use campus CRS
+# use campus CRS as standard
 campus_DEM <- rast("source_data/campus_DEM.tif") 
 crs(campus_DEM)
 campus_crs <-crs(campus_DEM)
 
+# the extent of the campus_DEM
+# is the zoom 3 indicator, 
+zoom_3_extent <- ext(campus_DEM) %>% vect()
 
-# Crop western region DEM to zoom 2 AOI
+
+# Get the DEM and 
+# Crop it to zoom 2 AOI
 # socal_aoi.geojson
 zoom_2 <- rast("source_data/dem90_hf/dem90_hf.tif")
 plot(zoom_2)
 
-# we'll need this
-# socal_aoi.geojson is the next crop extent.
-# it came from a Planet harvest that we did
+# AOI came from a Planet harvest that we did
 zoom_2_crop_extent <- geojson_sf("source_data/socal_aoi.geojson")
 zoom_2_crop_extent <- vect(zoom_2_crop_extent)
 
@@ -52,8 +55,7 @@ crs(zoom_2_crop_extent) == crs(zoom_2)
 
 # project it to match west_us
 # this will also 'rotate' southern california
-# when we crop it, making it 
-# visually more readable
+# when we crop it, making it visually more readable
 zoom_2_crop_extent <- project(zoom_2_crop_extent, crs(zoom_2))
 crs(zoom_2_crop_extent) == crs(zoom_2)
 
@@ -66,32 +68,101 @@ polys(zoom_2_crop_extent)
 zoom_2_cropped <- crop(x=zoom_2, y=zoom_2_crop_extent)
 plot(zoom_2_cropped)
 
-# we now turn zoom 2 DEM into a hillshade of the area to match:
-# hillshades are made of slopes and aspects
-zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
-plot(zoom_2_slope)
-
-zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
-plot(zoom_2_aspect)
-zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
-                          angle = 15,
-                          direction = 270,
-                          normalize = TRUE)
+# in fact, zoom 3 has no crs set:
+crs(zoom_3_extent)
+# so we need to set it
+zoom_3_extent <- set.crs(zoom_3_extent, crs(campus_DEM))
+crs(zoom_3_extent)
 
 
-# remake dataframes
+# batho-topo won't be big enough
+# let's try the global hillshade:
+hillshade <- rast("source_data/global_raster/GRAY_HR_SR_OB.tif") 
+zoom_3_extent <- project(zoom_3_extent, hillshade)
+zoom_2_hillshade <-  crop(x=hillshade, y=zoom_3_extent) 
+
+crs(zoom_2_hillshade) == crs(zoom_2_cropped)
+zoom_2_hillshade <- project(zoom_2_hillshade, crs(zoom_2_cropped))
+crs(zoom_2_hillshade) == crs(zoom_2_cropped)
+
+
+# make dataframes for ggplotting
 zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
 zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
 str(zoom_2_hillshade_df)
+str(zoom_2_DEM_df)
 
-# test and reproject as necessary
-zoom_3_extent <-ext(campus_DEM)
-crs(zoom_3_extent) == campus_crs
-crs(zoom_2_cropped) == campus_crs
-crs(zoom_2_hillshade) == campus_crs
+ggplot() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.55), guide="none") +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
 
-zoom_2_cropped <- project(zoom_2_cropped, campus_crs)
-zoom_2_hillshade <- project(zoom_2_cropped, campus_crs)
+
+
+
+# try to overlay 
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.55), guide="none") +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
+
+ 
+
+plot(zoom_2_cropped)
+polys(zoom_3_extent, border="red", lwd=4)
+
+
+
+# now we can re-project:
+zoom_3_extent <- project(zoom_3_extent, zoom_2_cropped)
+
+crs(zoom_3_extent) == crs(zoom_2_cropped)
+
+# now we can plot them together
+plot(zoom_2_cropped)
+polys(zoom_3_extent, border="red", lwd=2)
+
+plot(zoom_2_hillshade)
+polys(zoom_3_extent, border="red", lwd=4)
+
+
+# add the zoom indicator to the ggplot
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=hillshade)) +
+  scale_alpha(range = c(0.05, 0.55), guide="none") +
+  geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
+
+
+
+
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.55), guide="none") +
+  geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
+  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: Different hillshade", subtitle=gg_labelmaker(current_ggplot+1))
+
 
 
 # 'california populated places'
@@ -184,50 +255,7 @@ zoom_2_plot
 
 
 
-# now we want to use the extent of the campus_DEM
-# for our next zoom indicator
-# but they don't overlay
-zoom_3_extent <- ext(campus_DEM) %>% vect()
 
-plot(zoom_2_cropped)
-polys(zoom_3_extent, border="red", lwd=4)
-
-# because the projections don't match
-crs(zoom_3_extent) == crs(zoom_2_cropped)
-# in fact, zoom 3 has no crs set:
-crs(zoom_3_extent)
-# so we need to set it
-zoom_3_extent <- set.crs(zoom_3_extent, crs(campus_DEM))
-crs(zoom_3_extent)
-
-# now we can re-project:
-zoom_3_extent <- project(zoom_3_extent, zoom_2_cropped)
-
-crs(zoom_3_extent) == crs(zoom_2_cropped)
-
-# now we can plot them together
-plot(zoom_2_cropped)
-polys(zoom_3_extent, border="red", lwd=2)
-
-
-
-plot(zoom_2_hillshade, col = grays)
-polys(zoom_3_extent, border="red", lwd=4)
-
-plot(zoom_2_cropped, col = grays)
-polys(zoom_3_extent, border="red", lwd=4)
-
-# later on we will overlay in ggplot
-
-
-# ###########################
-# Map 5
-# Zoom 3: UCSB & Environs
-# these come pre-made
-
-plot(campus_DEM)
-zoom_3_hillshade <- rast("source_data/campus_hillshade.tif")
-plot(zoom_3_hillshade, col = grays)
 
 
 
@@ -266,8 +294,7 @@ polys(zoom_2_crop_extent, border="red",lwd=5)
 plot(zoom_2_hillshade, col = grays)
 polys(zoom_3_extent, border="red", lwd=5)
 
-# zoom 3:
-# doesn't have a locator
+
 
 
 
@@ -333,6 +360,34 @@ zoom_2_plot
 
 
 
+
+
+
+
+# zoom 2 needs water
+zoom_2_plot
+
+
+#################################################
+# zoom3
+# Map 5 ########################################
+
+
+# ###########################
+# Map 5
+# Zoom 3: UCSB & Environs
+# these come pre-made
+
+plot(campus_DEM)
+zoom_3_hillshade <- rast("source_data/campus_hillshade.tif")
+plot(zoom_3_hillshade, col = grays)
+
+
+
+
+
+
+
 #################################################
 # zoom3 as ggplot
 campus_hillshade <- rast("source_data/campus_hillshade.tif")
@@ -391,20 +446,19 @@ zoom_3_plot <- ggplot() +
 
 zoom_3_plot
 
-
-
-
-# ################################
-# for thinner graticules
-thin_grat <- theme(
-  panel.grid.major = element_line(colour = "white", linewidth = 0.05),  # was 0.5
-  panel.grid.minor = element_line(colour = "white", linewidth = 0.05)
-)
-
-
-
-# zoom 2 needs water
-zoom_2_plot
-
 # zoom 3 needs water, or should use topo_batho
 zoom_3_plot
+
+
+
+# we now turn zoom 2 DEM into a hillshade of the area to match:
+# hillshades are made of slopes and aspects
+zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
+plot(zoom_2_slope)
+
+zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
+plot(zoom_2_aspect)
+zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
+                          angle = 15,
+                          direction = 270,
+                          normalize = TRUE)

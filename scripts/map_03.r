@@ -18,8 +18,8 @@ library(geojsonsf)
 library(ggplot2)
 library(tidyterra)
 library(dplyr)
-library(ggpubr)
-library(raster)
+# library(ggpubr)
+# library(raster)
 
 # make sure output window is 1x1
 # because you muck with it a lot
@@ -162,6 +162,8 @@ zoom_1_overlay_plot <- ggplot() +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
   coord_sf() + 
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
+zoom_1_overlay_plot
+
 
 # the hillshade for the water is very subtle.
 zoom_1_overlay_plot
