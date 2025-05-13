@@ -134,6 +134,12 @@ polys(zoom_3_extent, border="red", lwd=2)
 plot(zoom_2_hillshade)
 polys(zoom_3_extent, border="red", lwd=4)
 
+# remake dataframes
+zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
+colnames(zoom_2_DEM_df)
+
+zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
+colnames(zoom_2_hillshade_df)
 
 # add the zoom indicator to the ggplot
 ggplot() +
@@ -141,7 +147,7 @@ ggplot() +
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
   geom_raster(data = zoom_2_hillshade_df,
-              aes(x=x, y=y, alpha=hillshade)) +
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.55), guide="none") +
   geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
@@ -178,7 +184,7 @@ places <- project(places, campus_crs)
 
 # For zoom 2, places does not overlay nicely.
 # this is another CRS error
-zoom_2_plot <- ggplot() +
+ggplot() +
   geom_raster(data = zoom_2_DEM_df,
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
@@ -189,10 +195,7 @@ zoom_2_plot <- ggplot() +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
   theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf() +
-  thin_grat +
-  ggtitle("Map 4: zm 2: Zoom test", subtitle=gg_labelmaker(current_ggplot+1))
-
-zoom_2_plot
+  ggtitle("Map 4: zm 2: Zoom test 2", subtitle=gg_labelmaker(current_ggplot+1))
 
 
 # move layer lower, add overlays first?

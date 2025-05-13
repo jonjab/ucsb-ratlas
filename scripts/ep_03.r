@@ -219,7 +219,8 @@ plot(bath_clipped)
 # for overlaying goodness:
 
 # save the file:
-# ep 4:
+# ( as in ep 4:)
+dir.create("output_data", showWarnings = FALSE)
 writeRaster(bath_clipped, "output_data/ep_3_campus_bathymetry_crop.tif",
             filetype="GTiff",
             overwrite=TRUE)
