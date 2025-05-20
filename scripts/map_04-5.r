@@ -92,6 +92,9 @@ zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
 str(zoom_2_hillshade_df)
 str(zoom_2_DEM_df)
 
+# let's START
+# with the graticule that we ended map 3 with:
+
 ggplot() +
   geom_raster(data = zoom_2_hillshade_df,
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
