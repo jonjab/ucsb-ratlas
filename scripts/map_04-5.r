@@ -41,7 +41,7 @@ campus_crs <-crs(campus_DEM)
 zoom_3_extent <- ext(campus_DEM) %>% vect()
 
 
-# Get the DEM and 
+# Get the west coast DEM and 
 # Crop it to zoom 2 AOI
 # socal_aoi.geojson
 zoom_2 <- rast("source_data/dem90_hf/dem90_hf.tif")
@@ -59,6 +59,7 @@ crs(zoom_2_crop_extent) == crs(zoom_2)
 zoom_2_crop_extent <- project(zoom_2_crop_extent, crs(zoom_2))
 crs(zoom_2_crop_extent) == crs(zoom_2)
 
+# plot them together 
 # to confirm that's the correct extent
 # that you want to crop to
 plot(zoom_2)
@@ -67,30 +68,35 @@ polys(zoom_2_crop_extent)
 # now crop to that extent
 zoom_2_cropped <- crop(x=zoom_2, y=zoom_2_crop_extent)
 plot(zoom_2_cropped)
+# we need water! #####################
 
-# in fact, zoom 3 has no crs set:
-crs(zoom_3_extent)
-# so we need to set it
-zoom_3_extent <- set.crs(zoom_3_extent, crs(campus_DEM))
-crs(zoom_3_extent)
+# batho-topo / SB_bath won't be big enough
+bath <- rast("source_data/SB_bath.tif")
+plot(bath)
 
 
-# batho-topo won't be big enough
-# let's try the global hillshade:
-hillshade <- rast("source_data/global_raster/GRAY_HR_SR_OB.tif") 
-zoom_3_extent <- project(zoom_3_extent, hillshade)
-zoom_2_hillshade <-  crop(x=hillshade, y=zoom_3_extent) 
+# let's try the global hillshade?
+# is it a hillshade? it looks like it.
+zoom_2_water <- rast("source_data/global_raster/GRAY_HR_SR_OB.tif") 
+plot(zoom_2_water)
 
-crs(zoom_2_hillshade) == crs(zoom_2_cropped)
-zoom_2_hillshade <- project(zoom_2_hillshade, crs(zoom_2_cropped))
-crs(zoom_2_hillshade) == crs(zoom_2_cropped)
+zoom_2_crop_extent <- project(zoom_2_crop_extent, crs(zoom_2_water))
+zoom_2_water <- crop(x=zoom_2_water, y=(zoom_2_crop_extent))
+plot(zoom_2_water)
+
+crs(zoom_2_water) == crs(zoom_2_cropped)
+zoom_2_water <- project(zoom_2_water, crs(zoom_2_cropped))
+crs(zoom_2_water) == crs(zoom_2_cropped)
 
 
 # make dataframes for ggplotting
 zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
-zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
+zoom_2_hillshade_df <- as.data.frame(zoom_2_water, xy=TRUE)
 str(zoom_2_hillshade_df)
 str(zoom_2_DEM_df)
+
+
+
 
 # let's START
 # with the graticule that we ended map 3 with:
@@ -99,12 +105,27 @@ ggplot() +
   geom_raster(data = zoom_2_hillshade_df,
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.55), guide="none") +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf() +
-  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+    ggtitle("Map 4: zm 2: hillshade", subtitle=gg_labelmaker(current_ggplot+1))
 
-
-
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  coord_sf() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+    ggtitle("Map 4: zm 2: dem", subtitle=gg_labelmaker(current_ggplot+1))
 
 # try to overlay 
 ggplot() +
@@ -114,35 +135,41 @@ ggplot() +
   geom_raster(data = zoom_2_hillshade_df,
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.55), guide="none") +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf() +
-  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+      ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
 
- 
-
-plot(zoom_2_cropped)
-polys(zoom_3_extent, border="red", lwd=4)
-
-
-
-# now we can re-project:
-zoom_3_extent <- project(zoom_3_extent, zoom_2_cropped)
+# so close!!!!!!
+#   geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
+# I think I'm going to need to project that too.
 
 crs(zoom_3_extent) == crs(zoom_2_cropped)
+zoom_3_extent <- project(zoom_3_extent, zoom_2_cropped)
 
-# now we can plot them together
-plot(zoom_2_cropped)
-polys(zoom_3_extent, border="red", lwd=2)
 
-plot(zoom_2_hillshade)
-polys(zoom_3_extent, border="red", lwd=4)
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.55), guide="none") +
+  coord_sf() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
 
-# remake dataframes
-zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
-colnames(zoom_2_DEM_df)
 
-zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
-colnames(zoom_2_hillshade_df)
+
 
 # add the zoom indicator to the ggplot
 ggplot() +
@@ -153,9 +180,14 @@ ggplot() +
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.55), guide="none") +
   geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
   coord_sf() +
-  ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  ggtitle("Map 4: zm 2: Overlay with Indicator", subtitle=gg_labelmaker(current_ggplot+1))
 
 
 
