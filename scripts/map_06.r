@@ -101,11 +101,14 @@ ggplot() +
   geom_sf(data=buildings, color ="hotpink") +
   geom_sf(data=bikeways, color="yellow") +
   geom_raster(data = campus_hillshade_df, aes(x=x, y=y, alpha = hillshade), show.legend = FALSE) +
-  geom_sf(data=habitat, color="darkorchid1") +
   geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
   scale_fill_viridis_c(na.value="NA") +
   ggtitle("Map 6 = Map 1: Batho-topo Extent", subtitle = (gg_labelmaker(current_ggplot+1))) +
-  coord_sf()
+  coord_sf() +
+  theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank(),
+        legend.position = "none",
+        panel.ontop=TRUE, panel.background = element_blank(),
+        panel.grid.major = element_line(color = "#FFFFFF33"))
 
 ggsave("images/map6.1.png", width = 12, height = 4, plot=last_plot())
 ggsave("readme_images/map6.1.png", width = 12, height = 4, plot=last_plot())
