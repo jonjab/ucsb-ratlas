@@ -36,8 +36,6 @@ gg_labelmaker <- function(plot_num){
 
 
 
-
-
 # re-create vector overlay map here
 # objects are from episodes 5 and 7
 # 
@@ -65,15 +63,23 @@ streams <- st_read("source_data/california_streams/streams_crop.shp")
   # bikes or streams = lines_HARV 
   # birds = plots_HARV 
   # greatercampus = aoi_boundary_HARV
-# create campus_DEM as a vector layer:
+
+# create campus_DEM as a dataframe:
 campus_DEM <- rast("source_data/campus_DEM.tif")
+
+# I know I'll need to reproject it:
+crs(birds) == crs(campus_DEM)
+birds <- st_transform(birds, crs(campus_DEM))
 campus_DEM_df <- as.data.frame(campus_DEM, xy = TRUE, na.rm=FALSE)
 names(campus_DEM_df)[names(campus_DEM_df) == 'greatercampusDEM_1_1'] <- 'elevation'
+
+# this turns the DEM into a vector:
 campus_DEM_sp <- st_as_sf(campus_DEM_df, coords = c("x", "y"), crs = crs(campus_DEM))
 # approximate the boundary box with a random sample of raster points:
 DEM_rand_sample <- sample_n(campus_DEM_sp, 10000)
 greatercampus <- st_read("source_data/greater_UCSB-campus-aoi.geojson")
 
+# this should look very much like the diagram at the start of the lesson:
 ggplot() +
   geom_sf(data = st_convex_hull(st_union(DEM_rand_sample)), fill = "green") +
   geom_sf(data = st_convex_hull(st_union(bikes)),
@@ -92,50 +98,55 @@ ggplot() +
 
 # Crop a Raster Using Vector Extent
 # ###############################
+# We can use the crop() function to crop a raster 
+# to the extent of another spatial object. To do this, 
+# we need to specify the raster to be cropped and 
+# the spatial object that will be used to crop the raster.
 
-# crop campus DEM to the extent of birds.
-plot(birds)
+plot(bikes)
 plot(campus_DEM)
 
-# now make it a ggplot 
 str(campus_DEM_df)
 
-# bad overlay
+# here's the wide view with the vector:
 ggplot() +
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
   scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
-  geom_sf(data=birds, color = "blue", alpha = 0.5) +
+  geom_sf(data=bikes, color = "blue", alpha = 0.5) +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Birds") +
   coord_sf()
 
-crs(birds) == crs(campus_DEM)
-birds <- st_transform(birds, crs(campus_DEM))
-
-ggplot() +
-  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
-  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
-  geom_sf(data=birds, color = "blue", alpha = 0.5) +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Birds") +
-  coord_sf()
-
-# now croppy croppy
-NCOS_DEM <- crop(x=campus_DEM, y=birds)
-NCOS_DEM_df <- as.data.frame(NCOS_DEM, xy = TRUE) %>% 
+# now crop the DEM to the extent of the bike layer
+# <- crop(x= raster_to_crop, y= vector_extent)
+campus_bike_DEM <- crop(x=campus_DEM, y=bikes)
+campus_bike_DEM_df <- as.data.frame(campus_bike_DEM, xy = TRUE) %>% 
   rename(elevation = greatercampusDEM_1_1) 
 
-ggplot() +
-  geom_raster(data = NCOS_DEM_df, aes(x=x, y=y, fill=elevation)) +
-  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
-  geom_sf(data=birds, color = "blue", alpha = 0.5) +
-  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Birds") +
-  coord_sf()
+
 
 
 
 # Challenge: Crop to Vector Points Extent
 # ##########################
+# 
+# 1. Crop the Canopy Height Model to the extent of the study plot locations.
+# 2. Plot the vegetation plot location points on top of the Canopy Height Model.
+# 
+# 1. Crop the campus DEM to the extent of the campus buildings layer.
+# 2. Plot the building polygons on top of the campus DEM.
 
-# was birds my only point file?
+# Solution
+
+ggplot() +
+  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill=elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+#  geom_sf(data=buildings, color = "yellow", alpha = 0.5) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM, Birds, and Bikes") +
+  coord_sf()
+
+plot(buildings)
+
+
 
 
 
@@ -345,6 +356,7 @@ polys(sb_channel_extent, col=NA)
 # what are appropriate local numbers?
 new_extent <- ext(1480000, 1560000, -2250000, -2050000)
 class(new_extent)
+
 # CHM_HARV_manual_cropped <- crop(x = CHM_HARV, y = new_extent)
 
 # this is a good extent to play with.
@@ -353,6 +365,19 @@ plot(sb_channel_extent)
 # these don't work
 # campus_DEM_cropped <- crop(x=campus_DEM, y=new_extent)
 # campus_DEM_cropped <- crop(x=campus_DEM, y=sb_channel_extent)
+
+
+# get/make some bounding boxes for 3 layers:
+bath_extent <- ext(campus_bath)
+buildings_extent <- ext(buildings)
+
+bath_extent_shape <- vect(bath_extent)
+buildings_extent_shape <- vect(buildings_extent)
+campus_extent_shape <- sb_channel_extent
+
+crs(campus_extent_shape)
+
+
 
 
 
@@ -367,10 +392,13 @@ plot(sb_channel_extent)
 # ########################
 # mean_tree_height_AOI <- extract(x = CHM_HARV, y = aoi_boundary_HARV,
 #                              fun = mean)
+
+
 # Extract Data using x,y Locations
+# ########################
+
 # Challenge: Extract Raster Height Values For Plot Locations
-
-
+# ########################
 
 
 
@@ -380,15 +408,7 @@ plot(sb_channel_extent)
 
 buildings <- st_read("source_data/Campus_Buildings/Campus_Buildings.shp")
 
-# get/make some bounding boxes for 3 layers:
-bath_extent <- ext(campus_bath)
-buildings_extent <- ext(buildings)
 
-bath_extent_shape <- vect(bath_extent)
-buildings_extent_shape <- vect(buildings_extent)
-campus_extent_shape <- sb_channel_extent
-
-crs(campus_extent_shape)
 
 
 writeVector(campus_extent_shape, "output_data/aoi_campus.shp", filetype= "ESRI shapefile", overwrite=TRUE)
