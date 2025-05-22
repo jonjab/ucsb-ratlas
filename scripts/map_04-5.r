@@ -355,7 +355,6 @@ colnames(zoom_3_hillshade_df)
 
 # let's make our ggplots shorter by saving
 # our theme:
-# ggplot theme
 rAtlas_theme <- theme_dark() +
 theme(axis.title.x=element_blank(), 
       axis.title.y=element_blank(), 
