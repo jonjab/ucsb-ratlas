@@ -92,6 +92,9 @@ ggplot() +
 # now do what's necessary to plot the new
 # closest-in #6 rasters together with the 4 vector layers
 
+# let's apply our named theme from map_05 
+
+
 # these '6' versions should map when they are ready:
 ggplot() +
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +

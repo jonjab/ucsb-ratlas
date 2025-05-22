@@ -5,6 +5,7 @@ rm(list=ls())
 
 library(sf)
 library(terra)
+library(tidyterra)
 library(geojsonsf)
 library(ggplot2)
 library(dplyr)
@@ -39,6 +40,7 @@ campus_crs <-crs(campus_DEM)
 # the extent of the campus_DEM
 # is the zoom 3 indicator, 
 zoom_3_extent <- ext(campus_DEM) %>% vect()
+crs(zoom_3_extent) <- campus_crs
 
 
 # Get the west coast DEM and 
@@ -145,12 +147,13 @@ ggplot() +
       ggtitle("Map 4: zm 2: Overlay test", subtitle=gg_labelmaker(current_ggplot+1))
 
 # so close!!!!!!
-#   geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
-# I think I'm going to need to project that too.
 
+
+# now I need the next zoom indicator
+# I need to project that too.
 crs(zoom_3_extent) == crs(zoom_2_cropped)
 zoom_3_extent <- project(zoom_3_extent, zoom_2_cropped)
-
+plot(zoom_3_extent)
 
 ggplot() +
   geom_raster(data = zoom_2_DEM_df,
@@ -173,13 +176,23 @@ ggplot() +
 
 # add the zoom indicator to the ggplot
 ggplot() +
+  geom_spatvector(data=zoom_3_extent, color="red", fill=NA, lwd=1)+
+  theme(panel.grid.major = element_line(color = "#FFFFFF33"),
+  panel.background = element_blank()) +
+  coord_sf()
+
+# now that I've added tidyterra, both the above geom_spatvecor
+# and the below geom_sf work
+
+ggplot() +
   geom_raster(data = zoom_2_DEM_df,
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
   geom_raster(data = zoom_2_hillshade_df,
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.55), guide="none") +
-  geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
+#  geom_spatvector(data=zoom_3_extent, color="red", fill=NA, lwd=1)+
+   geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
   coord_sf() +
   theme(axis.title.x=element_blank(), 
         axis.title.y=element_blank(), 
@@ -200,7 +213,12 @@ ggplot() +
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.55), guide="none") +
   geom_sf(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
   coord_sf() +
   ggtitle("Map 4: zm 2: Different hillshade", subtitle=gg_labelmaker(current_ggplot+1))
 
@@ -215,8 +233,9 @@ crs(places) == campus_crs
 places <- project(places, campus_crs)
 
 #places still not showing up
----------------------------------------
+#---------------------------------------
 
+str(zoom_2_hillshade_df)
 # For zoom 2, places does not overlay nicely.
 # this is another CRS error
 ggplot() +
@@ -224,113 +243,84 @@ ggplot() +
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
   geom_raster(data = zoom_2_hillshade_df,
-              aes(x=x, y=y, alpha=hillshade)) +
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
   geom_spatvector(data=places, fill="gray") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
   coord_sf() +
   ggtitle("Map 4: zm 2: Zoom test 2", subtitle=gg_labelmaker(current_ggplot+1))
 
-
-# move layer lower, add overlays first?
-# crs(places) == campus_crs
-
-
 crs(zoom_2_cropped) == campus_crs
-crs(zoom_2_hillshade) == campus_crs
+crs(zoom_2_water) == campus_crs
+crs(zoom_2_cropped) == crs(zoom_2_water)
 crs(places) == campus_crs
+# places is the one to reproject right now.
 
-# try again:
-# nope, you are gonna need to crop places
-zoom_2_plot <- ggplot() +
+places <- project(places, crs(zoom_2_cropped))
+
+ggplot() +
   geom_raster(data = zoom_2_DEM_df,
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
   geom_raster(data = zoom_2_hillshade_df,
-              aes(x=x, y=y, alpha=dem90_hf)) +
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
   geom_spatvector(data=places, fill="gray") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
-  coord_sf() + 
-  thin_grat +
-  ggtitle("Map 4: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: re-projected places", subtitle=gg_labelmaker(current_ggplot+1))
 
-# this plots, but at the full extent of california.
-zoom_2_plot
+# this plots, but to the full extent of california. 
+# we are gonna need to crop places
+
+# this also plots, but at the full extent of california.
 
 zoom_2_places <- crop(places, zoom_2_cropped)
 
-zoom_2_plot <- ggplot() +
+ggplot() +
   geom_raster(data = zoom_2_DEM_df,
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
-  geom_spatvector(data=zoom_2_places, fill="lightgray", color="gray") +
   geom_raster(data = zoom_2_hillshade_df,
-              aes(x=x, y=y, alpha=dem90_hf)) +
-  scale_alpha(range = c(0.2, 0.7), guide="none") +
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  geom_spatvector(data=zoom_2_places, fill="gray") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
   theme(axis.title.x=element_blank(), 
         axis.title.y=element_blank(), 
         legend.position="none", 
         panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
         panel.background = element_blank()) +
-  coord_sf() + 
-  thin_grat +
-  ggtitle("Map 4: zm 2: Bite of California", subtitle = gg_labelmaker(current_ggplot+1))
+  coord_sf() +
+  ggtitle("Map 4: zm 2: re-projected places", subtitle=gg_labelmaker(current_ggplot+1))
 
-zoom_2_plot
+# it plots!!!!! but ugly.
 
+# do we still need this zoom 2 hillshade?
+# we now turn zoom 2 DEM into a hillshade of the area to match:
+# hillshades are made of slopes and aspects
+zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
+plot(zoom_2_slope)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ##########################
-# do all the AOI polygons work with 
-# all the hillshades and DEMs?
-# make sure everything is in campus_CRS
-# maybe I don't want to do this. 
-
-# zoom 1:
-crs(zoom_1_dem) == campus_crs
-# zoom_1_dem <- project(zoom_1_dem, campus_crs)
-
-crs(zoom_1_hillshade) == campus_crs
-# zoom_1_dem <- project(zoom_1_dem, campus_crs)
-
-# zoom 2:
-crs(zoom_2) == campus_crs
-# renaming this here also for convenience
-# zoom_2_dem <- project(zoom_2, campus_crs)
-
-crs(zoom_2_hillshade) == campus_crs
-# renaming this here also for convenience
-# zoom_2_dem <- project(zoom_2, campus_crs)
-
-# zoom 3:
-crs(campus_DEM) == campus_crs
-crs(zoom_3_hillshade) == campus_crs
-
-
-# test the plots with locators
-plot(zoom_1_dem, col = grays)
-polys(zoom_2_crop_extent, border="red",lwd=5)
-
-# zoom 2: works
-plot(zoom_2_hillshade, col = grays)
-polys(zoom_3_extent, border="red", lwd=5)
+zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
+plot(zoom_2_aspect)
+zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
+                          angle = 15,
+                          direction = 270,
+                          normalize = TRUE)
 
 
 
@@ -338,78 +328,13 @@ polys(zoom_3_extent, border="red", lwd=5)
 
 
 
-#################################################
-# zoom 2 as ggplot
-plot(zoom_2_hillshade)
-polys(zoom_3_extent, border="red", lwd=2)
-
-zoom_2_DEM_df <- as.data.frame(zoom_2_cropped, xy=TRUE)
-colnames(zoom_2_DEM_df)
-
-zoom_2_hillshade_df <- as.data.frame(zoom_2_hillshade, xy=TRUE)
-colnames(zoom_2_hillshade_df)
-
-
-# ggplot the hillshade
-zoom_2_plot <- ggplot() +
-  geom_raster(data = zoom_2_hillshade_df,
-              aes(x=x, y=y, alpha=hillshade)) +
-  scale_alpha(range = c(0.05, 0.5), guide="none") +
-  geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
-  coord_sf() + 
-  ggtitle("Zoom 2: Bite of California hillshade", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_2_plot
-
-# ggplot the DEM
-zoom_2_plot <- ggplot() +
-  geom_raster(data = zoom_2_DEM_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
-  coord_sf() + 
-  ggtitle("Zoom 2: Bite of California w DEM", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_2_plot
-
-# now overlay them with alpha
-zoom_2_plot <- ggplot() +
-  geom_raster(data = zoom_2_DEM_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_raster(data = zoom_2_hillshade_df,
-              aes(x=x, y=y, alpha=hillshade)) +
-  scale_alpha(range = c(0.05, 0.5), guide="none") +
-  geom_spatvector(data=zoom_3_extent, color="red", fill=NA, lwd=1) +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
-  coord_sf() + 
-  ggtitle("Zoom 2: Bite of California w alpha overlay", 
-          gg_labelmaker(current_ggplot+1))
-
-zoom_2_plot
-
-# Zoom 2 still needs water. 
-
-
-
-
-
-
-
-# zoom 2 needs water
-zoom_2_plot
 
 
 #################################################
 # zoom3
 # Map 5 ########################################
-
+# 
+current_sheet <- 5
 
 # ###########################
 # Map 5
@@ -418,12 +343,7 @@ zoom_2_plot
 
 plot(campus_DEM)
 zoom_3_hillshade <- rast("source_data/campus_hillshade.tif")
-plot(zoom_3_hillshade, col = grays)
-
-
-
-
-
+plot(zoom_3_hillshade)
 
 
 #################################################
@@ -433,16 +353,26 @@ str(campus_hillshade)
 zoom_3_hillshade_df <- as.data.frame(campus_hillshade, xy=TRUE)
 colnames(zoom_3_hillshade_df)
 
+# let's make our ggplots shorter by saving
+# our theme:
+# ggplot theme
+rAtlas_theme <- theme_dark() +
+theme(axis.title.x=element_blank(), 
+      axis.title.y=element_blank(), 
+      legend.position="none", 
+      panel.ontop=TRUE,
+      panel.grid.major = element_line(color = "#FFFFFF33"),
+      panel.background = element_blank())
+  
+
+
+
 # ggplot the hillshade
 zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_hillshade_df,
               aes(x=x, y=y, alpha=hillshade)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
+  theme(rAtlas_theme) +
   coord_sf() + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Campus hillshade")
 
@@ -456,11 +386,7 @@ zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_DEM_df,
               aes(x=x, y=y, fill=greatercampusDEM_1_1)) +
   scale_fill_viridis_c() +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
+  theme(rAtlas_theme) +
   coord_sf() + 
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "UCSB DEM")
 zoom_3_plot
@@ -473,30 +399,15 @@ zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_hillshade_df,
               aes(x=x, y=y, alpha=hillshade)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
+  theme(rAtlas_theme) +
   coord_sf(label_axes="ES") + 
   ggtitle("Map 5: zm 3: UCSB & Surroundings", subtitle = gg_labelmaker(current_ggplot+1))
 
-
 zoom_3_plot
 
-# zoom 3 needs water, or should use topo_batho
+# zoom 3 needs water, or should use topo_batho?
 zoom_3_plot
 
 
 
-# we now turn zoom 2 DEM into a hillshade of the area to match:
-# hillshades are made of slopes and aspects
-zoom_2_slope <- terrain(zoom_2_cropped, "slope", unit="radians")
-plot(zoom_2_slope)
 
-zoom_2_aspect <- terrain(zoom_2_cropped, "aspect", unit="radians")
-plot(zoom_2_aspect)
-zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
-                          angle = 15,
-                          direction = 270,
-                          normalize = TRUE)
