@@ -13,7 +13,10 @@ library(terra)
 rm(list=ls())
 
 # set episode counter
+# when we run lots of files, this will help us keep track
 current_episode <- 1
+#
+############################################
 
 
 #############################################
@@ -52,8 +55,9 @@ campus_DEM %>%
   summary()
 
 # to show the deepest pixel to be 2.3 deep.
+# we're not sure 2.3 what
 
-# summary plots require a dataframe
+# ggplots require dataframes
 # (if we remove the NA's that screws up the narrative later)
 campus_DEM_df <- as.data.frame(campus_DEM, xy = TRUE, na.rm=FALSE)
 
@@ -63,12 +67,13 @@ campus_DEM_df <- as.data.frame(campus_DEM, xy = TRUE, na.rm=FALSE)
 str(campus_DEM_df)
 summary(campus_DEM_df)
 
-# so let's change the elevation field named greatercampusdem_1_1 
+# for convenienve, we will always 
+# change the elevation field named greatercampusdem_1_1 
 # to elevation 
-# we will stick to this naming convention the rest of the lesson
+# we will stick to this naming convention throughout the lesson
 names(campus_DEM_df)[names(campus_DEM_df) == 'greatercampusDEM_1_1'] <- 'elevation'
 
-
+# the legend shows our name change
 ggplot() + geom_raster(data = campus_DEM_df, 
               aes(x=x, y=y, fill = elevation)) +
   scale_fill_viridis_c() +
@@ -80,7 +85,7 @@ ggplot() + geom_raster(data = campus_DEM_df,
 ############
 
 # faster terra plot (terra::plot masks base::plot)
-# also doesn't force you to remember the name of
+# and also doesn't force you to remember the name of
 # the data layer
 plot(campus_DEM)
 
@@ -138,6 +143,9 @@ campus_bath <- rast("source_data/SB_bath.tif")
 crs(campus_bath)
 str(campus_bath)
 colnames(campus_bath)
+crs(campus_bath, proj = TRUE)
+plot(campus_bath)
+
 
 campus_bath_df <- as.data.frame(campus_bath, xy=TRUE, na.rm=FALSE)
 str(campus_bath_df)
