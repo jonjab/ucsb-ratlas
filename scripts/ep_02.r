@@ -5,7 +5,7 @@
 
 # ggtitle starts in this lesson, 
 # so we will start labeling our plots
-# automagically when we overlay 
+# automagically with a function when we overlay 
 # elevation with hillshade
 
 library(tidyverse)
@@ -32,12 +32,29 @@ names(campus_bath_df)[names(campus_bath_df) == 'Bathymetry_2m_OffshoreCoalOilPoi
 # Plotting Data Using Breaks
 #################################
 # lesson example bins / highlights Harvard Forest pixels > 400m.
-# for us, let's highlight our holes.
+# for us, can we highlight our holes?
 summary(campus_DEM_df)
+
+# episode 1 ended with this:
+ggplot() +
+  geom_histogram(data = campus_DEM_df, aes(elevation), bins = 40)
+
+# think about landscapes. elevation tends to 
+# go up on a log scale from the coast
+# therefore a binned log scale graphed should
+# show a straight line AND
+# shows that there's nothing at zero.
+# and emphasizes the few negative pixels
+ggplot() +
+  geom_bar(data = campus_DEM_df, aes(binned_DEM)) +
+  scale_y_continuous(trans='log10') +
+  ggtitle("log10 histogram")
+
 
 
 
 #############################
+# custom bins can help us understand our data
 custom_bins <- c(-3, -.01, .01, 2, 3, 4, 5, 10, 40, 200)
 
 campus_DEM_df <- campus_DEM_df %>% 
@@ -48,20 +65,18 @@ summary(campus_DEM_df$binned_DEM)
 
 # there's sooooo few negative values that you can't see them
 # on the histogram
+# but there is an odd dip in the 5-10 foot bin
 ggplot() +
   geom_bar(data = campus_DEM_df, aes(binned_DEM)) +
   ggtitle("Histogram")
 
 
-# but think about landscapes. elevation tends to 
-# go up on a log scale from the coast
-# log scale works better
-# this shows that there's nothing at zero.
-# and just a few negative pixels
+
+
 ggplot() +
   geom_bar(data = campus_DEM_df, aes(binned_DEM)) +
-  scale_y_continuous(trans='log10') +
-  ggtitle("log10 histogram")
+  ggtitle("Histogram")
+
 
 
 # let's go again with what we've learned
