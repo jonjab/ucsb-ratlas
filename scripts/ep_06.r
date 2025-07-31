@@ -108,7 +108,6 @@ ggplot() +
 
 # uhhh not sure whats going on here
 ggplot() +
-  geom_sf(data=bikes_icm, color = "red", size = .75) +
   geom_sf(data=bikes_library, color = "blue", size = 1.5) +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
       coord_sf()
@@ -170,9 +169,9 @@ ggplot() +
 
 # filled polygons need to go on the bottom
 ggplot() +
-  geom_sf(data=greatercampus, color = "red", size = 2) +
-  geom_sf(data=maincampus, color = "orange") +
-  geom_sf(data=westcampus, color = "blue") +
+  geom_sf(data=greatercampus, color = "red", size = 2, fill="transparent") +
+  geom_sf(data=maincampus, color = "orange", fill="transparent") +
+  geom_sf(data=westcampus, color = "blue", fill="transparent") +
   geom_sf(data=bikes_icm, color = "yellow", size = 1.5) +
   geom_sf(data=bikes_library, color = "red", size = .75) +
   geom_sf(data=buildings, color = "gray") +

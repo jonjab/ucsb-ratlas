@@ -122,7 +122,12 @@ campus_bike_DEM <- crop(x=campus_DEM, y=bikes)
 campus_bike_DEM_df <- as.data.frame(campus_bike_DEM, xy = TRUE) %>% 
   rename(elevation = greatercampusDEM_1_1) 
 
-
+ggplot() +
+  geom_raster(data = campus_bike_DEM_df, aes(x=x, y=y, fill=elevation)) +
+  scale_fill_gradientn(name = "Elevation", colors = terrain.colors(10)) +
+  geom_sf(data=bikes, color = "blue", alpha = 0.5) +
+  ggtitle(gg_labelmaker(current_ggplot+1), subtitle=" Campus DEM with Bikes") +
+  coord_sf()
 
 
 

@@ -73,6 +73,7 @@ ggplot() +
 # if you don't specify, you get all the bands
 
 west_campus_1ft <- rast("source_data/cirgis_1ft/w_campus_1ft.tif")
+nlyr(west_campus_1ft)
 # again, downsample to speed up plots:
 west_campus_4ft <- aggregate(west_campus_1ft, fact = 4)
 
