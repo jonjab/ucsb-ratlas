@@ -12,6 +12,8 @@ library(terra)
 # library(sf)
 # library(ggpubr)
 
+# clean the environment and hidden objects
+rm(list=ls())
 
 # set map number
 current_sheet <- 8

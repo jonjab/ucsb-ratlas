@@ -2,10 +2,27 @@
 # Wide overview of campus
 
 library(tidyverse)
-library(raster)
+# library(raster)
 library(terra)
 library(sf)
 library(scales)
+
+# clean the environment and hidden objects
+rm(list=ls())
+
+# make our ggtitles automagically #######
+# set map number
+current_sheet <- 1
+# set ggplot counter
+current_ggplot <- 0
+
+gg_labelmaker <- function(plot_num){
+  gg_title <- c("Map:", current_sheet, " ggplot:", plot_num)
+  plot_text <- paste(gg_title, collapse=" " )
+  print(plot_text)
+  current_ggplot <<- plot_num
+  return(plot_text)
+}
 
 # clean the environment and hidden objects
 rm(list=ls())

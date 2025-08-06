@@ -3,6 +3,26 @@
 
 library(terra)
 
+# clean the environment and hidden objects
+rm(list=ls())
+
+# set map number
+current_sheet <- 11
+# set ggplot counter
+current_ggplot <- 0
+
+gg_labelmaker <- function(plot_num){
+  gg_title <- c("Map:", current_sheet, " ggplot:", plot_num)
+  plot_text <- paste(gg_title, collapse=" " )
+  print(plot_text)
+  current_ggplot <<- plot_num
+  return(plot_text)
+}
+
+# every ggtitle() or labs() should be:
+# ggtitle(gg_labelmaker(current_ggplot+1))
+# end automagic ggtitle           #######
+
 dibblee_gol <- rast("source_data/07gGoleta/DB0007.tif")
 dibblee_gol <- rectify(dibblee_gol, method="bilinear")
 dibblee_gol

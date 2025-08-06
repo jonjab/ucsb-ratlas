@@ -6,7 +6,7 @@
 library(terra)
 library(ggplot2)
 library(dplyr)
-library(raster)
+#library(raster)
 library(sf)
 
 # clean the environment and hidden objects

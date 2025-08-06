@@ -308,6 +308,7 @@ ggplot() +
   ggtitle("Map 4: zm 2: re-projected places", subtitle=gg_labelmaker(current_ggplot+1))
 
 # it plots!!!!! but ugly.
+ggsave("images/map4.png", width = 3, height = 4, plot=last_plot())
 
 # do we still need this zoom 2 hillshade?
 # we now turn zoom 2 DEM into a hillshade of the area to match:
@@ -406,6 +407,8 @@ zoom_3_plot
 
 # zoom 3 needs water, or should use topo_batho?
 zoom_3_plot
+
+ggsave("images/map5.png", width = 4, height = 3, plot=zoom_3_plot)
 
 
 
