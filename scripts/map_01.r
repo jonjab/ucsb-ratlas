@@ -2,7 +2,7 @@
 # Wide overview of campus
 
 library(tidyverse)
-library(raster)
+# library(raster)
 library(terra)
 library(sf)
 library(scales)
