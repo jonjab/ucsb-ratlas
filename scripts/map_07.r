@@ -24,12 +24,12 @@ current_ggplot <- 0
 map3 <- image_read("images/map3.png") # 3x4 inches = 900x1200 pixels
 map4 <- image_read("images/map4.png") # 3x4 in = 900x1200 px
 map5 <- image_read("images/map5.png") # 4x3 in = 1200x900 px
-map6 <- image_read("images/map6.0.png") # 12x9 in = 3600x1200 px
+map6 <- image_read("images/map6.1.png") # 12x9 in = 3600x1200 px
 
 image_read("images/map3.png")
 image_read("images/map4.png")
 image_read("images/map5.png")
-image_read("images/map6.0.png")
+image_read("images/map6.1.png")
 
 # There are multiple ways to use the magick package to append images,
 # you could use image_append(), image_montage(), or image_composite()
