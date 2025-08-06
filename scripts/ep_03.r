@@ -249,3 +249,4 @@ ggplot() +
   geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = depth)) +
   scale_fill_viridis_c(na.value="NA") +
   coord_quickmap()
+

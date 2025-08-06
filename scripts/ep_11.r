@@ -48,7 +48,7 @@ ncos_rgb <- aggregate(ncos_rgb, fact = 4)
 
 # ep 7 objects
 # shapefiles
-buildings <- st_read("source_data/Campus_Buildings/Campus_Buildings.shp")
+buildings <- st_read("source_data/campus_buildings/Campus_Buildings.shp")
 birds <- st_read("source_data/NCOS_Bird_Survey_Data_20190724shp/NCOS_Bird_Survey_Data_20190724_web.shp")
 bikes <- st_read("source_data/icm_bikes/bike_paths/bikelanescollapsedv8.shp")
 streams <- st_read("source_data/california_streams/streams_crop.shp")
@@ -411,7 +411,6 @@ crs(campus_extent_shape)
 # leftover cruft?
 ################################################################
 
-buildings <- st_read("source_data/Campus_Buildings/Campus_Buildings.shp")
 
 
 
@@ -463,3 +462,4 @@ str(campus_DEM_df)
 #      geom_raster(data = campus_bath_df, 
 #              aes(x=x, y=y, alpha=bathymetry)) +
 #  coord_sf()
+

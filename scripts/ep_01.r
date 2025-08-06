@@ -6,6 +6,7 @@
 
 library(tidyverse)
 library(terra)
+library(sf)
 
 # setwd("C:/users/your_file_path")
 

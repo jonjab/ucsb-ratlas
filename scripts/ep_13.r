@@ -12,7 +12,7 @@ library(terra)
 library(ggplot2)
 library(dplyr)
 library(sf)
-library(raster)
+# library(raster)
 library(scales)
 
 # make our ggtitles automagically #######

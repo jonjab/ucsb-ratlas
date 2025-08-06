@@ -8,7 +8,10 @@ rm(list=ls())
 
 library(terra)
 library(tidyverse)
-library(raster)
+
+#library(raster)
+# brick needs raster, but raster won't load on coder.
+
 
 current_episode <- 5
 
@@ -136,10 +139,10 @@ plotRGB(west_campus_4ft,
 # brick is from raster
 # a brick is a new class for us
 # nl is the number of layers it should expect.
-natural_color_brick <- brick("source_data/cirgis_1ft/w_campus_1ft.tif")
-natural_color_brick
+# natural_color_brick <- brick("source_data/cirgis_1ft/w_campus_1ft.tif")
+#natural_color_brick
 
-plotRGB(natural_color_brick)
+# plotRGB(natural_color_brick)
 
 
 # the metadata shows 5 bands. How 
