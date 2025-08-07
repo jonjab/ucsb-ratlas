@@ -265,10 +265,10 @@ ggplot() +
 # Finally adding the coastline geometry and legend.
 # Save this plot in an object so we don't have to repeat the same code
 map2_gg1 <- ggplot() +
-  geom_spatvector(data=trees_filt, aes(size=HT, colour = 'Trees'),alpha = 0.5) +
-  scale_size_continuous(range = c(0, 2), name = 'Tree Height (ft)') +
   geom_spatvector(data=streams_crop, aes(colour = 'Streams'), , linewidth = 2, alpha=0.6) +
   geom_spatvector(data=bikes_lines, aes(colour = 'Bike Paths'), linewidth = 1) +
+  geom_spatvector(data=trees_filt, aes(size=HT, colour = 'Trees'),alpha = 0.5) +
+  scale_size_continuous(range = c(0, 2), name = 'Tree Height (ft)') +
   geom_spatvector(data=coastline_crop, aes(colour = 'Ocean'), linewidth = 1, fill = 'dodgerblue') +
   scale_colour_manual(name = "Legend",
                     values = c('Trees' = 'green4', 
@@ -363,14 +363,14 @@ map2_gg5 <- ggplot() +
     panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5)
   ) +
   scale_x_continuous(expand = c(0, 0)) +
-  scale_y_continuous(expand = c(0, 0), labels = scales::label_number(accuracy = 0.01))
+  scale_y_continuous(expand = c(0, 0), labels = scales::label_number(accuracy = 0.01)) +
   annotation_scale(location = 'bl', width_hint = 0.167)
 
 map2_gg5
 
 # Save this plot
 ggsave(
-  "images/map2_TreeSpecies.png",
+  "images/map2_5_TreeSpecies.png",
   plot = map2_gg5,
   width = 16, height = 9,
   dpi = 500,
@@ -386,3 +386,60 @@ ggsave(
 )
 
 # add a background?
+
+# Group trees by type: Conifer, Deciduous, Eucalyptus
+# Using str_detect from stringr (part of tidyverse) to find keywords in species names
+trees_filt$Tree_Type <- case_when(
+  str_detect(trees_filt$SPP, regex("PINUS|CEDRUS|CUPRESSUS|SEQUOIA|PICEA|ABIES", ignore_case = TRUE)) ~ "Conifer",
+  str_detect(trees_filt$SPP, regex("QUERCUS|PLATANUS|ACER|ALNUS|BETULA|FAGUS|SALIX|POPULUS|PRUNUS", ignore_case = TRUE)) ~ "Deciduous",
+  str_detect(trees_filt$SPP, regex("EUCALYPTUS", ignore_case = TRUE)) ~ "Eucalyptus",
+  TRUE ~ "Other"
+)
+
+# Create a new plot coloring trees by their general type
+map2_gg6 <- ggplot() +
+  # Plot only the categorized trees, leave "Other" out for clarity
+  geom_spatvector(data = subset(trees_filt, Tree_Type != "Other"), aes(colour = Tree_Type), alpha = 0.8, size = 1.2) +
+  scale_colour_manual(name = "Tree Type",
+                      values = c("Conifer" = "darkgreen",
+                                 "Deciduous" = "lightgreen",
+                                 "Eucalyptus" = "firebrick")) +
+  guides(colour = guide_legend(override.aes = list(size=5))) + # Make legend points larger
+  new_scale_color() + # Reset color scale for the layers below
+  geom_spatvector(data=streams_crop, aes(colour = 'Streams'), linewidth = 2, alpha=0.6) +
+  geom_spatvector(data=bikes_lines, aes(colour = 'Bike Paths'), linewidth = 1) +
+  geom_spatvector(data=coastline_crop, aes(colour = 'Ocean'), linewidth = 1, fill = 'dodgerblue') +
+  geom_sf(data = iv_buildings, color = alpha("gray60", 0.2), fill = NA) +
+  scale_colour_manual(name = "Legend",
+                      values = c('Bike Paths' = 'black',
+                                 'Streams' = 'cadetblue3',
+                                 'Ocean' = 'dodgerblue')) +
+  theme_minimal() +
+  labs(title = 'Map 2: Tree Types on UCSB Campus',
+       subtitle = 'Conifers (dark green), Deciduous (light green), and Eucalyptus (orange)',
+       caption = gg_labelmaker(current_ggplot+1),
+       x = NULL, y = NULL) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size=20),
+    plot.subtitle = element_text(hjust = 0.5, size=14),
+    panel.grid = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5),
+    legend.position = "bottom",
+    legend.box = "horizontal"
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  annotation_scale(location = 'br', width_hint = 0.1) +
+  annotation_north_arrow(location = "tr", which_north = "true", 
+                         style = north_arrow_fancy_orienteering)
+
+map2_gg6
+
+# Save the new plot
+ggsave(
+  "images/map2_TreeTypes.png",
+  plot = map2_gg6,
+  width = 16, height = 9,
+  dpi = 500,
+  units = 'in'
+)
