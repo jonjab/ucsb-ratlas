@@ -385,7 +385,6 @@ ggsave(
   units = 'in'
 )
 
-# add a background?
 
 # Group trees by type: Conifer, Deciduous, Eucalyptus
 # Using str_detect from stringr (part of tidyverse) to find keywords in species names
@@ -396,14 +395,21 @@ trees_filt$Tree_Type <- case_when(
   TRUE ~ "Other"
 )
 
+summary(trees_filt)
+names(trees_filt)
+unique(trees_filt$Tree_Type)
+
+tree_colors <- c("Conifer" = "darkgreen",
+                  "Deciduous" = "lightgreen",
+                  "Eucalyptus" = "firebrick")
+
+
 # Create a new plot coloring trees by their general type
 map2_gg6 <- ggplot() +
   # Plot only the categorized trees, leave "Other" out for clarity
   geom_spatvector(data = subset(trees_filt, Tree_Type != "Other"), aes(colour = Tree_Type), alpha = 0.8, size = 1.2) +
   scale_colour_manual(name = "Tree Type",
-                      values = c("Conifer" = "darkgreen",
-                                 "Deciduous" = "lightgreen",
-                                 "Eucalyptus" = "firebrick")) +
+                      values = tree_colors) +
   guides(colour = guide_legend(override.aes = list(size=5))) + # Make legend points larger
   new_scale_color() + # Reset color scale for the layers below
   geom_spatvector(data=streams_crop, aes(colour = 'Streams'), linewidth = 2, alpha=0.6) +
