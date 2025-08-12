@@ -335,7 +335,7 @@ ggplot() +
         panel.grid.major = element_line(color = "#FFFFFF33"),
         panel.background = element_blank()) +
   coord_sf() +
-  ggtitle("Map 4: zm 2: re-projected places", subtitle=gg_labelmaker(current_ggplot+1))
+  ggtitle("Map 4: zm 2: The Bight of California", subtitle=gg_labelmaker(current_ggplot+1))
 
 ggsave("final_output/map_04.png", width = 4, height = 3, plot=last_plot())
 
