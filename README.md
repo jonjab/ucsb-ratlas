@@ -39,6 +39,8 @@ the addition of ggtitles to keep track of where they are generated.
 All outputs from map scripts should have a 3 tall x 4 wide 
 aspect ratio, except where noted.
 
+![Check out our progess](progress.md "August, 2025 outputs.")
+
 ### Map 1. A wide view of campus with:
 
 -   Extent should be the same as #3 inset of map 7.
