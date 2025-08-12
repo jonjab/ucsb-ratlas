@@ -56,5 +56,10 @@ map7 <- image_montage(image = c(map7_row1, map6),
 
 map7
 
-#save map7
-image_write(map7, "final_output/map_07.png", format = "png")
+map_7_titled <- image_annotate(map7, "Map 7: Where is UCSB?",
+                       size = 14,
+                       location = "+0+0")
+
+
+#save your output
+image_write(map_7_titled, "final_output/map_07.png", format = "png")
