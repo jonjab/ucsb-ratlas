@@ -122,13 +122,7 @@ ggplot() +
   coord_sf()
 
 
-#theme(axis.title = element_blank(), axis.text = element_blank(), axis.ticks = element_blank(),
-#      legend.position = "none",
-#      panel.ontop=TRUE, panel.background = element_blank(),
-#      panel.grid.major = element_line(color = "#FFFFFF33"))
-
-
 
 
 ggsave("images/map6.1.png", width = 12, height = 4, plot=last_plot())
-ggsave("readme_images/map6.1.png", width = 12, height = 4, plot=last_plot())
+ggsave("final_output/map_06.png", width = 12, height = 4, plot=last_plot())

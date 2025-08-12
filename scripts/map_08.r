@@ -99,7 +99,7 @@ plotRGB(planet_scene, stretch = "hist",
         main = "pretty")
 
 # and save the image
-png("final_output/map8.png")
+png("final_output/map_08.png")
 
 # reset your par() before leaving
 par(mfrow = c(1,1))

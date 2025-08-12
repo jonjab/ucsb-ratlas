@@ -54,7 +54,7 @@ map7 <- image_montage(image = c(map7_row1, map6),
                       tile = "1x2",
                       geometry = "4800x1200")
 
+map7
 
 #save map7
-image_write(map7, "images/map7.png", format = "png")
-image_read("images/map7.png")
+image_write(map7, "final_output/map_07.png", format = "png")
