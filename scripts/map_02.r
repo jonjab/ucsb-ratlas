@@ -403,11 +403,12 @@ tree_colors <- c("Conifer" = "darkgreen",
                   "Deciduous" = "lightgreen",
                   "Eucalyptus" = "firebrick")
 
+trees_filt$Tree_Type != "Other"
 
 # Create a new plot coloring trees by their general type
 map2_gg6 <- ggplot() +
   # Plot only the categorized trees, leave "Other" out for clarity
-  geom_spatvector(data = subset(trees_filt, Tree_Type != "Other"), aes(colour = Tree_Type), alpha = 0.8, size = 1.2) +
+  geom_spatvector(data = subset(trees_filt, trees_filt$Tree_Type != "Other"), aes(colour = Tree_Type), alpha = 0.8, size = 1.2) +
   scale_colour_manual(name = "Tree Type",
                       values = tree_colors) +
   guides(colour = guide_legend(override.aes = list(size=5))) + # Make legend points larger
