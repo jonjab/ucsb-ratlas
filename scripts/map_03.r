@@ -259,5 +259,6 @@ ggplot() +
 #######################################################################################
 
 
-ggsave("images/map3.png", width = 3, height = 4, plot=zoom_1_overlay_places)
+ggsave("images/map_03.png", width = 3, height = 4, plot=zoom_1_overlay_places)
+ggsave("final_output/map_03.png", width = 3, height = 4, plot=zoom_1_overlay_places)
 

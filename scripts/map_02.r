@@ -111,7 +111,7 @@ coastline_crop <- crop(coastline_proj, trees)
 
 ggplot() +
   geom_spatvector(data=trees, colour='green4') +
-  geom_spatvector(data=streams_crop, , colour='lightblue') +
+  geom_spatvector(data=streams_crop, colour='lightblue') +
   geom_spatvector(data = bikes_crop, colour='black') +
   geom_spatvector(data=coastline_crop, colour='darkblue') +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
@@ -450,3 +450,4 @@ ggsave(
   dpi = 500,
   units = 'in'
 )
+ggsave("final_output/map_02.png", width = 16, height = 9, plot=map2_gg6)

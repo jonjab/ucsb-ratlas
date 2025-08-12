@@ -310,6 +310,37 @@ ggplot() +
 # it plots!!!!! but ugly.
 ggsave("images/map4.png", width = 3, height = 4, plot=last_plot())
 
+# how can I make the fill transparent?
+
+ggplot() +
+  geom_spatvector(data=zoom_2_places, color="#D3D3D380", fill="#D4D4D450") +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: re-projected places", subtitle=gg_labelmaker(current_ggplot+1))
+
+
+# better
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  geom_spatvector(data=zoom_2_places, color="#D3D3D380", fill="#D4D4D450") +
+  geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  coord_sf() +
+  ggtitle("Map 4: zm 2: re-projected places", subtitle=gg_labelmaker(current_ggplot+1))
+
+ggsave("final_output/map_04.png", width = 4, height = 3, plot=last_plot())
+
+
+
 # do we still need this zoom 2 hillshade?
 # we now turn zoom 2 DEM into a hillshade of the area to match:
 # hillshades are made of slopes and aspects
@@ -323,6 +354,8 @@ zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
                           direction = 270,
                           normalize = TRUE)
 
+
+ggsave("images/map_044.png", width = 3, height = 4, plot=last_plot())
 
 
 
@@ -409,6 +442,7 @@ zoom_3_plot
 zoom_3_plot
 
 ggsave("images/map5.png", width = 4, height = 3, plot=zoom_3_plot)
+ggsave("final_output/map_05.png", width = 4, height = 3, plot=zoom_3_plot)
 
 
 
