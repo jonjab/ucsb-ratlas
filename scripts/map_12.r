@@ -8,6 +8,9 @@
 # clean the environment and hidden objects
 rm(list=ls())
 
+# reset the par() before starting.
+par(mfrow = c(1,1))
+
 # set map number
 current_sheet <- 12
 # set ggplot counter
@@ -69,11 +72,12 @@ summary(values(ndvi_tiff))
 str(ndvi_tiff)
 class(ndvi_tiff)
 str(ndvi_tiff$nir)
-
+plot(ndvi_tiff$nir)
 
 # not sure how the columns get named "NIR" 
 # probably the first layer imported
 # we will circle back to that
+
 names(ndvi_tiff)
 ndvi_tiff
 
@@ -222,7 +226,7 @@ summary(values(ndvi_series_stack))
 # 20230427 still looks suspicious
 plot(ndvi_series_stack)
 
-ggsave("images/ndvi_series_stack.png", plot=last_plot())
+ggsave("images/ndvi_series_stack_1.png", plot=last_plot())
 
 # there are duplicate column names / dates 
 # this turns out to be a feature!
@@ -231,7 +235,11 @@ ggsave("images/ndvi_series_stack.png", plot=last_plot())
 ### let's crop the stack to the NCOS area to make a 
 #   more relevant map for campus.
 #   and make this plotting even faster
-ncos_extent <- vect("source_data/planet/planet/ncos_aoi.geojson")
+
+# ncos_extent <- vect("source_data/planet/planet/ncos_aoi.geojson")
+ncos_extent <- vect("scripts/ncos.geojson")
+
+# I think this reprojection might cause just enough of a shift to muck us up
 ncos_extent <- project(ncos_extent, ndvi_series_stack)
 
 ndvi_series_stack <- crop(ndvi_series_stack, ncos_extent)
@@ -383,7 +391,7 @@ str(avg_NDVI)
 # here we go #############
 
 # finally: a logical plot of average NDVIs over time. 
-plot(avg_NDVI$MeanNDVI)
+# plot(avg_NDVI$MeanNDVI)
 
 avg_NDVI_df <- as.data.frame(avg_NDVI, rm.na=FALSE)
 str(avg_NDVI_df)
