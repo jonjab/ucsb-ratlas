@@ -36,7 +36,7 @@ creeks      <- project(creeks, bike_paths)
 creek_bike_pts <- intersect(creeks, bike_paths)
 str(creek_bike_pts)
 
-creek_bike_pts <- vect(creek_bike_pts)
+# creek_bike_pts <- vect(creek_bike_pts)
 
 # let's put in another plot here to prove it
 plot(creek_bike_pts)
@@ -45,4 +45,4 @@ plot(creek_bike_pts)
 # ---------- 4. write shapefile ----------
 #  Do we output a new point shapefile as a result?
 out_file <- "output_data/creek_bike_intersections.shp"
-writeVector(creek_bike_pts, out_file, TRUE)
+writeVector(creek_bike_pts, out_file, overwrite=TRUE)
