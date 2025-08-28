@@ -10,6 +10,8 @@ library(googledrive)
 dir.create("downloaded_data", showWarnings = FALSE)
 dir.create("source_data", showWarnings = FALSE)
 dir.create("images", showWarnings = FALSE)
+dir.create("output_data", showWarnings = FALSE)
+
 
 # 1 establish a connection to our public google drive 
 #   later on from S3
