@@ -43,7 +43,7 @@ map7_row1 <- image_montage(image = c(map3, map4, map5),
               tile = "3x1",
               geometry = "1600x1200",
               gravity = "center")
-(map7_row1)
+map7_row1
 
 # save that
 image_write(map7_row1, "final_output/map7_row_1.png", format = "png")

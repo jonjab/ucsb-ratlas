@@ -252,6 +252,47 @@ ggplot() +
   coord_sf() + 
   ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
 
+ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_1_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.3), guide="none") +
+  geom_spatvector(data=places, fill="NA", color="#EEEEEE33") +
+  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1, fill=NA) +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF66"),
+        panel.background = element_blank()) +
+  coord_sf() + 
+  ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
+
+# now one to save
+ggplot() +
+  geom_raster(data = zoom_1_dem_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_1_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.3), guide="none") +
+  geom_spatvector(data=places, fill="NA", color="#EEEEEE33") +
+  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1, fill=NA) +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        axis.text.x=element_blank(), 
+        axis.text.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF66"),
+        panel.background = element_blank()) +
+  coord_sf() + 
+  ggtitle("The Western United States", 
+          subtitle = "on California's south-central coast")
 
 
 
@@ -259,6 +300,6 @@ ggplot() +
 #######################################################################################
 
 
-ggsave("images/map_03.png", width = 3, height = 4, plot=zoom_1_overlay_places)
+ggsave("images/map_03.png", width = 3, height = 4, plot=last_plot())
 ggsave("final_output/map_03.png", width = 3, height = 4, plot=zoom_1_overlay_places)
 

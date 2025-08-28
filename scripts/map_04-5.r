@@ -319,6 +319,7 @@ ggplot() +
 
 
 # better
+# and add places viz from map 3
 ggplot() +
   geom_raster(data = zoom_2_DEM_df,
               aes(x=x, y=y, fill=dem90_hf)) +
@@ -326,8 +327,9 @@ ggplot() +
   geom_raster(data = zoom_2_hillshade_df,
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
-  geom_spatvector(data=zoom_2_places, color="#D3D3D380", fill="#D4D4D450") +
+  geom_spatvector(data=zoom_2_places, fill="NA", color="#EEEEEE33") +
   geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
+  theme_minimal() +
   theme(axis.title.x=element_blank(), 
         axis.title.y=element_blank(), 
         legend.position="none", 
@@ -337,7 +339,28 @@ ggplot() +
   coord_sf() +
   ggtitle("Map 4: zm 2: The Bight of California", subtitle=gg_labelmaker(current_ggplot+1))
 
-ggsave("final_output/map_04.png", width = 4, height = 3, plot=last_plot())
+# and a final one for saving
+ggplot() +
+  geom_raster(data = zoom_2_DEM_df,
+              aes(x=x, y=y, fill=dem90_hf)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_2_hillshade_df,
+              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  geom_spatvector(data=zoom_2_places, fill="NA", color="#EEEEEE33") +
+  geom_spatvector(data=zoom_3_extent, color="red", fill=NA) +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  coord_sf() +
+  ggtitle("On the Bight of California", 
+          subtitle= "this still needs work")
+
+ggsave("images/map4.png", width = 4, height = 3, plot=last_plot())
 
 
 
@@ -355,7 +378,7 @@ zoom_2_hillshade <- shade(zoom_2_slope, zoom_2_aspect,
                           normalize = TRUE)
 
 
-ggsave("images/map_044.png", width = 3, height = 4, plot=last_plot())
+ggsave("images/map_04.png", width = 3, height = 4, plot=last_plot())
 
 
 
@@ -389,9 +412,11 @@ colnames(zoom_3_hillshade_df)
 
 # let's make our ggplots shorter by saving
 # our theme:
-rAtlas_theme <- theme_dark() +
+rAtlas_theme <- theme_minimal() +
 theme(axis.title.x=element_blank(), 
       axis.title.y=element_blank(), 
+      axis.text.x=element_blank(), 
+      axis.text.y=element_blank(), 
       legend.position="none", 
       panel.ontop=TRUE,
       panel.grid.major = element_line(color = "#FFFFFF33"),
@@ -399,7 +424,7 @@ theme(axis.title.x=element_blank(),
   
 
 
-
+# this doesn't pick up the theme. 
 # ggplot the hillshade
 zoom_3_plot <- ggplot() +
   geom_raster(data = zoom_3_hillshade_df,
@@ -433,15 +458,57 @@ zoom_3_plot <- ggplot() +
               aes(x=x, y=y, alpha=hillshade)) +
   scale_alpha(range = c(0.05, 0.5), guide="none") +
   theme(rAtlas_theme) +
-  coord_sf(label_axes="ES") + 
+  coord_sf() + 
   ggtitle("Map 5: zm 3: UCSB & Surroundings", subtitle = gg_labelmaker(current_ggplot+1))
 
+# back out of the shortened theme and use what works
+zoom_3_plot <- ggplot() +
+  geom_raster(data = zoom_3_DEM_df,
+              aes(x=x, y=y, fill=greatercampusDEM_1_1)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_3_hillshade_df,
+              aes(x=x, y=y, alpha=hillshade)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        axis.text.x=element_blank(), 
+        axis.text.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  coord_sf() + 
+  ggtitle("Map 5: zm 3: kill the axis labels?", subtitle = gg_labelmaker(current_ggplot+1))
+
 zoom_3_plot
+
+# back out of the shortened theme and use what works
+zoom_3_plot <- ggplot() +
+  geom_raster(data = zoom_3_DEM_df,
+              aes(x=x, y=y, fill=greatercampusDEM_1_1)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_3_hillshade_df,
+              aes(x=x, y=y, alpha=hillshade)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  theme_minimal() +
+  theme(axis.title.x=element_blank(), 
+        axis.title.y=element_blank(), 
+        axis.text.x=element_blank(), 
+        axis.text.y=element_blank(), 
+        legend.position="none", 
+        panel.ontop=TRUE,
+        panel.grid.major = element_line(color = "#FFFFFF33"),
+        panel.background = element_blank()) +
+  coord_sf() + 
+  ggtitle("UCSB Surroundings", subtitle = "on unceded land of the Chumash")
+
+
 
 # zoom 3 needs water, or should use topo_batho?
 zoom_3_plot
 
-ggsave("images/map5.png", width = 4, height = 3, plot=zoom_3_plot)
+ggsave("images/map5.png", width = 4, height = 3, plot=last_plot())
 ggsave("final_output/map_05.png", width = 4, height = 3, plot=zoom_3_plot)
 
 
