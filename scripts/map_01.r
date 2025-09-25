@@ -10,12 +10,6 @@ library(scales)
 # clean the environment and hidden objects
 rm(list=ls())
 
-# make our ggtitles automagically #######
-# set map number
-current_sheet <- 1
-# set ggplot counter
-current_ggplot <- 0
-
 gg_labelmaker <- function(plot_num){
   gg_title <- c("Map:", current_sheet, " ggplot:", plot_num)
   plot_text <- paste(gg_title, collapse=" " )
@@ -24,26 +18,29 @@ gg_labelmaker <- function(plot_num){
   return(plot_text)
 }
 
-# clean the environment and hidden objects
-rm(list=ls())
 
 # make our ggtitles automagically #######
 # set map number
 current_sheet <- 1
 # set ggplot counter
 current_ggplot <- 0
-
-gg_labelmaker <- function(plot_num){
-  gg_title <- c("Map:", current_sheet, " ggplot:", plot_num)
-  plot_text <- paste(gg_title, collapse=" " )
-  print(plot_text)
-  current_ggplot <<- plot_num
-  return(plot_text)
-}
 
 # every ggtitle() or labs() should be:
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle           #######
+
+
+# we will use this to make the graticule and axes
+my_theme <-   theme(axis.title.x=element_blank(), 
+                    axis.title.y=element_blank(), 
+                    axis.text.x=element_blank(), 
+                    axis.text.y=element_blank(), 
+                    legend.position="none", 
+                    panel.ontop=TRUE,
+                    panel.grid.major = element_line(color = "#FFFFFF33"),
+                    panel.background = element_blank()) 
+
+
 
 
 # add vector layers
@@ -75,6 +72,20 @@ ggplot() +
 
 ggsave("images/map1.1.png", plot=last_plot())
 
+# don't forget you have a theme to use
+ggplot() +
+  geom_sf(data=habitat) +
+  geom_sf(data=buildings) +
+  geom_sf(data=iv_buildings) +
+  geom_sf(data=bikeways)  +
+  my_theme +
+  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  coord_sf()
+
+ggsave("images/map1.2.png", plot=last_plot())
+
+
+
 # which buildings are on top?
 # the last ones added
 # #2 
@@ -83,6 +94,7 @@ ggplot() +
   geom_sf(data=iv_buildings, color="pink") +
   geom_sf(data=buildings) +
   geom_sf(data=bikeways, color="blue") +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
@@ -95,7 +107,8 @@ ggplot() +
   geom_sf(data=iv_buildings, color="light gray") +
   geom_sf(data=buildings) +
   geom_sf(data=bikeways, color="blue") +
-  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  my_theme +
+    ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf() 
   
 ggsave("images/1.2.png", plot=last_plot())
@@ -179,7 +192,8 @@ sea_level_df <- as.data.frame(sea_level_0, xy=TRUE) %>%
 # how would I do this with overlay?
 ggplot() + 
   geom_raster(data = sea_level_df, aes(x=x, y=y, fill = binned)) + 
-  ggtitle(gg_labelmaker(current_ggplot+1)) +
+  my_theme +
+    ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
 summary(sea_level_df)
@@ -194,6 +208,7 @@ length(custom_sea_bins)
 # now sea level is zero.
 ggplot() + 
   geom_raster(data = sea_level_df, aes(x=x, y=y, fill = binned)) +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
@@ -203,6 +218,7 @@ ggplot() +
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
   geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
   scale_fill_viridis_c(na.value="NA") +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "Does the ovlerlay work?") +
   coord_sf()
 
@@ -233,6 +249,7 @@ ggplot() +
   scale_fill_manual(values = terrain.colors(10)) +
   geom_raster(data=campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
   scale_fill_manual(values = terrain.colors(19)) +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1), subtitle = "overlay works!") +
   coord_quickmap()
 
@@ -242,6 +259,7 @@ ggplot() +
     geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = binned_DEM)) +
     geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = binned_bath)) +
     scale_fill_manual(values = terrain.colors(19)) +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_quickmap()
 
@@ -249,6 +267,7 @@ ggplot() +
   geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
   geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
         scale_fill_viridis_c(na.value="NA") +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_quickmap()
   
@@ -257,6 +276,8 @@ ggplot() +
 # one DEM that is both bathymetry and elevation
 # by combining campus_DEM and sea_level_0
 # this is also in episode 9
+# but ... does batho_topo plot the same?
+
 
 plot(campus_bath)
 plot(sea_level_0)
@@ -291,6 +312,7 @@ ggplot() +
   geom_sf(data=habitat, color="yellow") +
   geom_sf(data=buildings) +
   geom_sf(data=bikeways, color="blue") +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
     coord_sf()
 
@@ -308,6 +330,7 @@ ggplot() +
   geom_sf(data=habitat, color="yellow") +
   geom_sf(data=buildings) +
   geom_sf(data=bikeways, color="blue") +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
@@ -337,6 +360,7 @@ ggplot() +
   geom_sf(data=buildings, color ="hotpink") +
   geom_sf(data=habitat, color="darkorchid1") +
   geom_sf(data=bikeways, color="#00abff") +
+  my_theme +
   ggtitle(gg_labelmaker(current_ggplot+1)) +
   coord_sf()
 
@@ -362,8 +386,8 @@ final_ggplot <- ggplot() +
   labs(title=gg_title_string, 
        subtitle="UCSB, buildings, environs, bikepaths",
        caption = "rAtlas Map 1") + 
-  theme(axis.title.x=element_blank(), axis.title.y=element_blank(), legend.position="none") +
-    coord_sf()
+  my_theme +
+  coord_sf()
 
 
 # is there anything we don't like about this?

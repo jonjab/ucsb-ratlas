@@ -45,6 +45,15 @@ gg_labelmaker <- function(plot_num){
 # ggtitle(gg_labelmaker(current_ggplot+1))
 # end automagic ggtitle           #######
 
+# we will use this to make the graticule and axes
+my_theme <-   theme(axis.title.x=element_blank(), 
+                    axis.title.y=element_blank(), 
+                    axis.text.x=element_blank(), 
+                    axis.text.y=element_blank(), 
+                    legend.position="none", 
+                    panel.ontop=TRUE,
+                    panel.grid.major = element_line(color = "#FFFFFF33"),
+                    panel.background = element_blank()) 
 
 # set up a local CRS to use throughout
 campus_DEM <- rast("source_data/campus_DEM.tif") 
@@ -161,6 +170,7 @@ zoom_1_overlay_plot <- ggplot() +
   scale_alpha(range = c(0.3, 0.6), guide="none") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
   coord_sf() + 
+  my_theme +
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
 zoom_1_overlay_plot
 
@@ -177,15 +187,15 @@ zoom_1_overlay_plot <- ggplot() +
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.3, 0.6), guide="none") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
+  my_theme +
   coord_sf() + 
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_1_overlay_plot
+
+ggsave("images/map3.1.png", width = 3, height = 4, plot=last_plot())
+
+
 
 # now seize control of labels
 zoom_1_overlay_plot <- ggplot() +
@@ -196,16 +206,13 @@ zoom_1_overlay_plot <- ggplot() +
               aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
   scale_alpha(range = c(0.05, 0.3), guide="none") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
+  my_theme +
   coord_sf() + 
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
 
 zoom_1_overlay_plot
 
+ggsave("images/map3.2.png", width = 3, height = 4, plot=last_plot())
 
 
 # now let's add 
@@ -224,11 +231,7 @@ zoom_1_overlay_places <- ggplot() +
   scale_alpha(range = c(0.05, 0.3), guide="none") +
   geom_spatvector(data=places, fill="NA") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.background = element_blank()) +
+  my_theme +
   coord_sf() + 
   ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
 
@@ -243,12 +246,7 @@ ggplot() +
   scale_alpha(range = c(0.05, 0.3), guide="none") +
   geom_spatvector(data=places, fill="NA") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.grid.major = element_line(color = "#FFFFFF33"),
-          panel.background = element_blank()) +
+  my_theme +
   coord_sf() + 
   ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
 
@@ -261,15 +259,11 @@ ggplot() +
   scale_alpha(range = c(0.05, 0.3), guide="none") +
   geom_spatvector(data=places, fill="NA", color="#EEEEEE33") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1, fill=NA) +
-  theme_minimal() +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.grid.major = element_line(color = "#FFFFFF66"),
-        panel.background = element_blank()) +
+  my_theme +
   coord_sf() + 
   ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
+
+
 
 # now one to save
 ggplot() +
@@ -281,15 +275,7 @@ ggplot() +
   scale_alpha(range = c(0.05, 0.3), guide="none") +
   geom_spatvector(data=places, fill="NA", color="#EEEEEE33") +
   geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1, fill=NA) +
-  theme_minimal() +
-  theme(axis.title.x=element_blank(), 
-        axis.title.y=element_blank(), 
-        axis.text.x=element_blank(), 
-        axis.text.y=element_blank(), 
-        legend.position="none", 
-        panel.ontop=TRUE,
-        panel.grid.major = element_line(color = "#FFFFFF66"),
-        panel.background = element_blank()) +
+  my_theme +
   coord_sf() + 
   ggtitle("The Western United States", 
           subtitle = "on California's south-central coast")
@@ -301,5 +287,5 @@ ggplot() +
 
 
 ggsave("images/map3.png", width = 3, height = 4, plot=last_plot())
-ggsave("final_output/map_03.png", width = 3, height = 4, plot=zoom_1_overlay_places)
+ggsave("final_output/map_03.png", width = 3, height = 4, plot=last_plot())
 

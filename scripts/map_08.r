@@ -15,6 +15,10 @@ library(terra)
 # clean the environment and hidden objects
 rm(list=ls())
 
+# reset your par() before starting
+par(mfrow = c(1,1))
+
+
 # set map number
 current_sheet <- 8
 # set ggplot counter
@@ -100,6 +104,12 @@ plotRGB(planet_scene, stretch = "hist",
 
 # and save the image
 png("final_output/map_08.png")
+jpeg("final_output/map_08.jpg")
+
+# save the output as a png
+par(mfrow = c(2,2))
+#  natural color
+
 
 # reset your par() before leaving
 par(mfrow = c(1,1))

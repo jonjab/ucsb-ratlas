@@ -503,6 +503,29 @@ zoom_3_plot <- ggplot() +
   coord_sf() + 
   ggtitle("UCSB Surroundings", subtitle = "on unceded land of the Chumash")
 
+zoom_3_plot
+
+# let's eject the theme to an object we can re-use
+my_theme <-   theme(axis.title.x=element_blank(), 
+                    axis.title.y=element_blank(), 
+                    axis.text.x=element_blank(), 
+                    axis.text.y=element_blank(), 
+                    legend.position="none", 
+                    panel.ontop=TRUE,
+                    panel.grid.major = element_line(color = "#FFFFFF33"),
+                    panel.background = element_blank()) 
+
+zoom_3_plot <- ggplot() +
+  geom_raster(data = zoom_3_DEM_df,
+              aes(x=x, y=y, fill=greatercampusDEM_1_1)) +
+  scale_fill_viridis_c() +
+  geom_raster(data = zoom_3_hillshade_df,
+              aes(x=x, y=y, alpha=hillshade)) +
+  scale_alpha(range = c(0.05, 0.5), guide="none") +
+  theme_minimal() +
+  theme(my_theme) +
+  coord_sf() + 
+  ggtitle("UCSB Surroundings", subtitle = "on unceded land of the Chumash")
 
 
 # zoom 3 needs water, or should use topo_batho?
