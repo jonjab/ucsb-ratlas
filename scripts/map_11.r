@@ -25,7 +25,8 @@ gg_labelmaker <- function(plot_num){
 
 dibblee_gol <- rast("source_data/07gGoleta/DB0007.tif")
 dibblee_gol <- rectify(dibblee_gol, method="bilinear")
-dibblee_gol
+
+crs(dibblee_gol)
 
 plot(dibblee_gol)
 plotRGB(dibblee_gol)
@@ -56,5 +57,24 @@ ll_vec <- as.polygons(ll_ext, crs="EPSG:4326")
 utm_ext <- ext(project(ll_vec, "EPSG:32611"))
 
 # do the crop
-crop_dibblee_gol <- crop(dibblee_gol, utm_ext)
+# crop_dibblee_gol <- crop(dibblee_gol, utm_ext)
+# plotRGB(crop_dibblee_gol)
+
+# project(dibblee_gol,  "EPSG:32611")
+
+
+crs(campus_bathotopo)
+
+campus_bathotopo <- rast("output_data/campus_bathotopo.tif") %>% 
+  project(campus_bathotopo, dibblee_gol)
+
+
+
+crop_dibblee_map_1 <- crop(dibblee_gol, campus_bathotopo)
 plotRGB(crop_dibblee_gol)
+
+
+
+png(filename="final_output/dibble_aoi.png")
+plot(crop_dibblee_gol)
+dev.off()
