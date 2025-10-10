@@ -1,0 +1,79 @@
+---
+title: "UCSB Atlas Maps"
+format: html
+---
+
+This document displays the maps created for the UCSB Atlas project.
+
+## Map 1: An overview of campus
+
+![Map of the UCSB campus](./map_01.png)
+
+*Caption: A map showing the layout of buildings and bike paths on the UCSB
+ campus, which is on the south-facng coast of California.*
+
+## Map 2: Creeks, Trees, Bike Paths
+
+![Map of UCSB tree species](./map_02.png)
+
+*Caption: A map highlighting the different tree species found around the UCSB campus.*
+
+## Map 3: Where is UCSB?
+
+![Map of shortest paths at UCSB](./map_03.png)
+
+*Caption: A map illustrating the shortest paths between various points on the UCSB campus.*
+
+## Map 4: Where is UCSB 2?
+
+![Map of UCSB campus elevation](./map_04.png)
+
+*Caption: A map showing the elevation profile of the UCSB campus.*
+
+## Map 5: Zoomed in all the way
+
+![Map of UCSB campus elevation contours](./map_05.png)
+
+*Caption: A map showing the elevation contours of the UCSB campus.*
+
+## Map 6: Heatmap of Campus. What?
+
+![Heatmap of UCSB campus](./map_06.png)
+
+*Caption: A heatmap visualization of the UCSB campus.*
+
+## Map 7: Laid out 3-4-5-6
+
+![Map of UCSB campus features](./map_07.png)
+
+*Caption: A map highlighting various features of the UCSB campus.*
+
+## Map 8: Campus NDVI
+
+![Map of UCSB campus NDVI](./map_08.png)
+
+*Caption: A map showing the Normalized Difference Vegetation Index (NDVI) of the UCSB campus.*
+
+## Map 9: Campus Shoreline
+
+![Map of UCSB campus shoreline](./map_12.png)
+
+*Caption: A map of the UCSB campus shoreline.*
+
+## Map 10: Campus Row
+
+![Map of UCSB campus row](./map7_row_1.png)
+
+*Caption: A map showing a specific row of the UCSB campus.*
+
+## Map 11: Campus Buildings and Trees
+
+![Map of UCSB campus buildings and trees](./map_08.1.jpg)
+
+*Caption: A map showing the relationship between buildings and trees on the UCSB campus.*
+
+## Map 12: Campus Buildings and Shoreline
+
+![Map of UCSB campus buildings and shoreline](./map_08.jpg)
+
+*Caption: A map showing the relationship between buildings and the shoreline on the UCSB campus.*
