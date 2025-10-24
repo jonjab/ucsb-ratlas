@@ -1,3 +1,5 @@
+# map 3 is an overview of the west coast of the US.
+
 # map 3-4-5 is a tryptic,
 # that runs horizontally on top of map 7
 # zooming in to campus
@@ -8,18 +10,14 @@
 # -- just as in the overlay episode --
 #  -- which overlay episode Jonnie?     --
 
-
 # clean the environment and hidden objects
 rm(list=ls())
 
 library(terra)
 library(geojsonsf)
-# library(sf)
 library(ggplot2)
 library(tidyterra)
 library(dplyr)
-# library(ggpubr)
-# library(raster)
 
 # make sure output window is 1x1
 # because you muck with it a lot
@@ -55,28 +53,28 @@ my_theme <-   theme(axis.title.x=element_blank(),
                     panel.grid.major = element_line(color = "#FFFFFF33"),
                     panel.background = element_blank()) 
 
-# set up a local CRS to use throughout
-campus_DEM <- rast("source_data/campus_DEM.tif") 
-campus_crs = crs(campus_DEM)
-str(campus_crs)
-
 
 # #####################
-# Map 3
-# Zoom 1: west US overview
+# Map 3 Zoom 1: west US overview
+# starts here
+
+# dem:
+zoom_1_dem <- rast("source_data/dem90_hf/dem90_hf.tif")
+# this is a bit too big later on. let's downsample it:
+zoom_1_dem <- aggregate(zoom_1_dem, fact=5)
+plot(zoom_1_dem)
+
+# let's save this for later use
+writeRaster(zoom_1_dem, 
+            "output_data/downsampled_w-coast_dem.tif",
+            overwrite = TRUE)
 
 # hillshade:
 world <- rast("source_data/global_raster/GRAY_HR_SR_OB.tif")
 plot(world)
 
-# dem:
-zoom_1_dem <- rast("source_data/dem90_hf/dem90_hf.tif")
-plot(zoom_1_dem)
-# this is a bit too big later on. let's downsample it:
-zoom_1_dem <- aggregate(zoom_1_dem, fact=5)
-plot(zoom_1_dem)
 
-# and get our clipping extent
+# get our clipping extent for both of those:
 zoom_1_extent <- geojson_sf("source_data/cali_overview.geojson")
 zoom_1_extent_vect <- vect(zoom_1_extent)
 zoom_1_extent_vect
@@ -174,45 +172,10 @@ zoom_1_overlay_plot <- ggplot() +
   ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
 zoom_1_overlay_plot
 
+# the hillshade in the water is very subtle.
 
-# the hillshade for the water is very subtle.
-zoom_1_overlay_plot
-
-# add the graticule
-zoom_1_overlay_plot <- ggplot() +
-  geom_raster(data = zoom_1_dem_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_raster(data = zoom_1_hillshade_df,
-              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
-  scale_alpha(range = c(0.3, 0.6), guide="none") +
-  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  my_theme +
-  coord_sf() + 
-  ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_1_overlay_plot
-
+# save an interim file file documentation:
 ggsave("images/map3.1.png", width = 3, height = 4, plot=last_plot())
-
-
-
-# now seize control of labels
-zoom_1_overlay_plot <- ggplot() +
-  geom_raster(data = zoom_1_dem_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_raster(data = zoom_1_hillshade_df,
-              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
-  scale_alpha(range = c(0.05, 0.3), guide="none") +
-  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  my_theme +
-  coord_sf() + 
-  ggtitle("Western US Fancy Overlay", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_1_overlay_plot
-
-ggsave("images/map3.2.png", width = 3, height = 4, plot=last_plot())
 
 
 # now let's add 
@@ -220,53 +183,12 @@ ggsave("images/map3.2.png", width = 3, height = 4, plot=last_plot())
 # which is census data
 # for the sake of a nice vizualization
 places <- vect("source_data/tl_2023_06_place/tl_2023_06_place.shp")
-plot(places)
 
+# this plots slow
+# plot(places)
+
+# some experimentation led me to here:
 zoom_1_overlay_places <- ggplot() +
-  geom_raster(data = zoom_1_dem_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_raster(data = zoom_1_hillshade_df,
-              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
-  scale_alpha(range = c(0.05, 0.3), guide="none") +
-  geom_spatvector(data=places, fill="NA") +
-  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  my_theme +
-  coord_sf() + 
-  ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
-
-zoom_1_overlay_places
-
-ggplot() +
-  geom_raster(data = zoom_1_dem_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_raster(data = zoom_1_hillshade_df,
-              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
-  scale_alpha(range = c(0.05, 0.3), guide="none") +
-  geom_spatvector(data=places, fill="NA") +
-  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1.5, fill=NA) +
-  my_theme +
-  coord_sf() + 
-  ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
-
-ggplot() +
-  geom_raster(data = zoom_1_dem_df,
-              aes(x=x, y=y, fill=dem90_hf)) +
-  scale_fill_viridis_c() +
-  geom_raster(data = zoom_1_hillshade_df,
-              aes(x=x, y=y, alpha=GRAY_HR_SR_OB)) +
-  scale_alpha(range = c(0.05, 0.3), guide="none") +
-  geom_spatvector(data=places, fill="NA", color="#EEEEEE33") +
-  geom_spatvector(data=zoom_2_crop_extent, color="red", lwd= 1, fill=NA) +
-  my_theme +
-  coord_sf() + 
-  ggtitle("Western US", subtitle = gg_labelmaker(current_ggplot+1))
-
-
-
-# now one to save
-ggplot() +
   geom_raster(data = zoom_1_dem_df,
               aes(x=x, y=y, fill=dem90_hf)) +
   scale_fill_viridis_c() +
@@ -280,12 +202,10 @@ ggplot() +
   ggtitle("The Western United States", 
           subtitle = "on California's south-central coast")
 
-
+zoom_1_overlay_places
 
 
 #######################################################################################
 
-
-ggsave("images/map3.png", width = 3, height = 4, plot=last_plot())
+ggsave("images/map3.2.png", width = 3, height = 4, plot=last_plot())
 ggsave("final_output/map_03.png", width = 3, height = 4, plot=last_plot())
-
