@@ -104,11 +104,6 @@ plotRGB(planet_scene, stretch = "hist",
 
 # and save the image
 png("final_output/map_08.png")
-jpeg("final_output/map_08.1.jpg")
-
-# save the output as a png
-par(mfrow = c(2,2))
-#  natural color
 
 
 # reset your par() before leaving
