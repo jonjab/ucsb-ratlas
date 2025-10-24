@@ -20,7 +20,7 @@ This document displays the maps created for the UCSB Atlas project.
 
 ## Map 3: Where is UCSB?
 
-![Map of shortest paths at UCSB](./map_03.png)
+![UCSB in the US (zoom 1)](./map_03.png)
 
 *Caption: A map illustrating the shortest paths between various points on the UCSB campus.*
 
