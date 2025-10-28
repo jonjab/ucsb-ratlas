@@ -63,18 +63,18 @@ utm_ext <- ext(project(ll_vec, "EPSG:32611"))
 # project(dibblee_gol,  "EPSG:32611")
 
 
+campus_bathotopo <- rast("output_data/campus_bathotopo.tif") 
+
+# dibblee_gol <- project(campus_bathotopo, dibblee_gol)
+
 crs(campus_bathotopo)
 
-campus_bathotopo <- rast("output_data/campus_bathotopo.tif") %>% 
-  project(campus_bathotopo, dibblee_gol)
 
-
-
-crop_dibblee_map_1 <- crop(dibblee_gol, campus_bathotopo)
-plotRGB(crop_dibblee_gol)
+# crop_dibblee_map_1 <- crop(dibblee_gol, campus_bathotopo)
+# plotRGB(crop_dibblee_gol)
 
 
 
 png(filename="final_output/dibble_aoi.png")
-plot(crop_dibblee_gol)
+# plot(crop_dibblee_gol)
 dev.off()

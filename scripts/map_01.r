@@ -350,19 +350,19 @@ str(campus_hillshade_df)
 #update color scheme for contrast 
 # +hillshade
 # trying with the scales library to shorten the x, y to 2 decimals
-ggplot() +
-  geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
-  geom_raster(data = campus_hillshade_df, aes(x=x, y=y, alpha = campus_hillshade), show.legend = FALSE) +
-  geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
-  scale_fill_viridis_c(na.value="NA")+ 
-  labs(labels =label_number(scale = 1/1000)) +
-  geom_sf(data=iv_buildings, color=alpha("light gray", .1), fill=NA) +
-  geom_sf(data=buildings, color ="hotpink") +
-  geom_sf(data=habitat, color="darkorchid1") +
-  geom_sf(data=bikeways, color="#00abff") +
-  my_theme +
-  ggtitle(gg_labelmaker(current_ggplot+1)) +
-  coord_sf()
+#ggplot() +
+# geom_raster(data = campus_DEM_df, aes(x=x, y=y, fill = elevation)) +
+#  geom_raster(data = campus_hillshade_df, aes(x=x, y=y, alpha = campus_hillshade), show.legend = FALSE) +
+#  geom_raster(data = campus_bath_df, aes(x=x, y=y, fill = bathymetry)) +
+#  scale_fill_viridis_c(na.value="NA")+ 
+#  labs(labels =label_number(scale = 1/1000)) +
+#  geom_sf(data=iv_buildings, color=alpha("light gray", .1), fill=NA) +
+#  geom_sf(data=buildings, color ="hotpink") +
+#  geom_sf(data=habitat, color="darkorchid1") +
+#  geom_sf(data=bikeways, color="#00abff") +
+#  my_theme +
+#  ggtitle(gg_labelmaker(current_ggplot+1)) +
+#  coord_sf()
 
 
 # next we need to refine the plot and labels
@@ -389,6 +389,7 @@ final_ggplot <- ggplot() +
   my_theme +
   coord_sf()
 
+final_ggplot
 
 # is there anything we don't like about this?
 # do we want subtle off-campus bike paths?
