@@ -31,18 +31,52 @@ creeks     <- vect("source_data/california_streams/streams_crop.shp")
 creeks      <- project(creeks, bike_paths)
 
 # plot creeks and paths together here to prove it
+creeks_and_bikes <- ggplot() +
+  geom_sf(data=bike_paths, color = "darkgray") +
+  geom_sf(data=creeks, color = "blue") +
+  coord_sf() +
+  ggtitle(gg_labelmaker(current_ggplot+1))
+creeks_and_bikes
+
 
 # ---------- 3. intersection points ----------
-creek_bike_pts <- intersect(creeks, bike_paths)
-str(creek_bike_pts)
+crossings <- intersect(creeks, bike_paths)
 
-creek_bike_pts <- vect(creek_bike_pts)
+str(crossings)
+crossings <- vect(crossings)
 
-# let's put in another plot here to prove it
-plot(creek_bike_pts)
+plot(crossings)
 
 
 # ---------- 4. write shapefile ----------
 #  Do we output a new point shapefile as a result?
 out_file <- "output_data/creek_bike_intersections.shp"
 writeVector(creek_bike_pts, out_file, overwrite=TRUE)
+
+# 5 visualize all that for me
+creeks_and_bikes <- ggplot() +
+  geom_sf(data=bike_paths, color = "darkgray") +
+  geom_sf(data=creeks, color = "blue") +
+  geom_sf(data=creek_bike_pts, color = "red", size = 4) +
+  coord_sf() +
+  ggtitle(gg_labelmaker(current_ggplot+1))
+
+
+creeks_and_bikes
+
+
+
+# Create two example line SpatVectors
+line1_coords <- matrix(c(0, 0, 5, 5), ncol = 2, byrow = TRUE)
+line2_coords <- matrix(c(0, 5, 5, 0), ncol = 2, byrow = TRUE)
+
+line1 <- vect(line1_coords, type = "lines", crs = "epsg:4326")
+line2 <- vect(line2_coords, type = "lines", crs = "epsg:4326")
+
+# Find the intersection
+intersection_points <- intersect(line1, line2)
+
+# Plot the results (optional)
+plot(line1, col = "blue", lwd = 2)
+plot(line2, col = "red", lwd = 2, add = TRUE)
+plot(intersection_points, col = "green", pch = 16, cex = 1.5, add = TRUE)
